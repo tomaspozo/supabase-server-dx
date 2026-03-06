@@ -1,4 +1,4 @@
-import { a as Credentials, c as SupabaseContext, d as WithSupabaseConfig, l as SupabaseEnv, n as AllowWithKey, r as AuthResult } from "./types-D9O4XOqP.cjs";
+import { a as Credentials, l as SupabaseEnv, n as AllowWithKey, r as AuthResult } from "./types-Bl-RE9Fd.mjs";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 //#region src/errors.d.ts
@@ -57,13 +57,4 @@ declare function createContextClient(token?: string | null, env?: Partial<Supaba
 //#region src/core/create-admin-client.d.ts
 declare function createAdminClient(env?: Partial<SupabaseEnv>): SupabaseClient;
 //#endregion
-//#region src/core/create-supabase-context.d.ts
-declare function createSupabaseContext(request: Request, options?: WithSupabaseConfig): Promise<{
-  data: SupabaseContext;
-  error: null;
-} | {
-  data: null;
-  error: AuthError;
-}>;
-//#endregion
-export { verifyCredentials as a, AuthError as c, verifyAuth as i, EnvError as l, createAdminClient as n, extractCredentials as o, createContextClient as r, resolveEnv as s, createSupabaseContext as t };
+export { extractCredentials as a, EnvError as c, verifyCredentials as i, createContextClient as n, resolveEnv as o, verifyAuth as r, AuthError as s, createAdminClient as t };

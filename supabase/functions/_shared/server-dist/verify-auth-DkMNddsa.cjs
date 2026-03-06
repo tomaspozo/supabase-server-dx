@@ -1,5 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
-import { createLocalJWKSet, jwtVerify } from "jose";
+let _supabase_supabase_js = require("@supabase/supabase-js");
+let jose = require("jose");
 
 //#region src/errors.ts
 var EnvError = class extends Error {
@@ -71,7 +71,7 @@ function createAdminClient(env) {
 	const { data: resolved, error } = resolveEnv(env);
 	if (error) throw error;
 	const secretKey = resolved.secretKeys[0]?.key ?? "";
-	return createClient(resolved.url, secretKey, { auth: {
+	return (0, _supabase_supabase_js.createClient)(resolved.url, secretKey, { auth: {
 		persistSession: false,
 		autoRefreshToken: false,
 		detectSessionInUrl: false
@@ -84,7 +84,7 @@ function createContextClient(token, env) {
 	const { data: resolved, error } = resolveEnv(env);
 	if (error) throw error;
 	const anonKey = resolved.publishableKeys[0]?.key ?? "";
-	return createClient(resolved.url, anonKey, {
+	return (0, _supabase_supabase_js.createClient)(resolved.url, anonKey, {
 		global: { headers: token ? { Authorization: `Bearer ${token}` } : {} },
 		auth: {
 			persistSession: false,
@@ -179,8 +179,8 @@ async function tryMode(mode, credentials, env) {
 			if (!credentials.token) return null;
 			if (!env.jwks) return null;
 			try {
-				const jwkSet = createLocalJWKSet(env.jwks);
-				const { payload } = await jwtVerify(credentials.token, jwkSet);
+				const jwkSet = (0, jose.createLocalJWKSet)(env.jwks);
+				const { payload } = await (0, jose.jwtVerify)(credentials.token, jwkSet);
 				const claims = payload;
 				return {
 					authType: "user",
@@ -221,27 +221,51 @@ async function verifyAuth(request, options) {
 }
 
 //#endregion
-//#region src/core/create-supabase-context.ts
-async function createSupabaseContext(request, options) {
-	const { data: auth, error } = await verifyAuth(request, {
-		allow: options?.allow ?? "user",
-		env: options?.env
-	});
-	if (error) return {
-		data: null,
-		error
-	};
-	return {
-		data: {
-			supabase: createContextClient(auth.token, options?.env),
-			supabaseAdmin: createAdminClient(options?.env),
-			user: auth.user,
-			claims: auth.claims,
-			authType: auth.authType
-		},
-		error: null
-	};
-}
-
-//#endregion
-export { createContextClient as a, AuthError as c, extractCredentials as i, EnvError as l, verifyAuth as n, createAdminClient as o, verifyCredentials as r, resolveEnv as s, createSupabaseContext as t };
+Object.defineProperty(exports, 'AuthError', {
+  enumerable: true,
+  get: function () {
+    return AuthError;
+  }
+});
+Object.defineProperty(exports, 'EnvError', {
+  enumerable: true,
+  get: function () {
+    return EnvError;
+  }
+});
+Object.defineProperty(exports, 'createAdminClient', {
+  enumerable: true,
+  get: function () {
+    return createAdminClient;
+  }
+});
+Object.defineProperty(exports, 'createContextClient', {
+  enumerable: true,
+  get: function () {
+    return createContextClient;
+  }
+});
+Object.defineProperty(exports, 'extractCredentials', {
+  enumerable: true,
+  get: function () {
+    return extractCredentials;
+  }
+});
+Object.defineProperty(exports, 'resolveEnv', {
+  enumerable: true,
+  get: function () {
+    return resolveEnv;
+  }
+});
+Object.defineProperty(exports, 'verifyAuth', {
+  enumerable: true,
+  get: function () {
+    return verifyAuth;
+  }
+});
+Object.defineProperty(exports, 'verifyCredentials', {
+  enumerable: true,
+  get: function () {
+    return verifyCredentials;
+  }
+});

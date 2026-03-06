@@ -1,16 +1,62 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_with_supabase = require('./with-supabase-CmdRD4CW.cjs');
-const require_create_supabase_context = require('./create-supabase-context-D31apwMv.cjs');
+const require_verify_auth = require('./verify-auth-DkMNddsa.cjs');
+const require_create_supabase_context = require('./create-supabase-context-Cu2Xbq2B.cjs');
 
-exports.AuthError = require_create_supabase_context.AuthError;
-exports.EnvError = require_create_supabase_context.EnvError;
-exports.addCorsHeaders = require_with_supabase.addCorsHeaders;
-exports.buildCorsHeaders = require_with_supabase.buildCorsHeaders;
-exports.createAdminClient = require_create_supabase_context.createAdminClient;
-exports.createContextClient = require_create_supabase_context.createContextClient;
+//#region src/cors.ts
+function buildCorsHeaders(config) {
+	if (config === false) return {};
+	const opts = typeof config === "object" ? config : {};
+	const origins = opts.origins ?? "*";
+	const origin = Array.isArray(origins) ? origins.join(", ") : origins;
+	const headers = {
+		"Access-Control-Allow-Origin": origin,
+		"Access-Control-Allow-Methods": opts.methods?.join(", ") ?? "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+		"Access-Control-Allow-Headers": opts.headers?.join(", ") ?? "Authorization, apikey, Content-Type, x-client-info"
+	};
+	if (opts.maxAge != null) headers["Access-Control-Max-Age"] = String(opts.maxAge);
+	if (opts.credentials) headers["Access-Control-Allow-Credentials"] = "true";
+	return headers;
+}
+function addCorsHeaders(response, config) {
+	if (config === false) return response;
+	const corsHeaders = buildCorsHeaders(config);
+	const newResponse = new Response(response.body, response);
+	for (const [key, value] of Object.entries(corsHeaders)) newResponse.headers.set(key, value);
+	return newResponse;
+}
+
+//#endregion
+//#region src/with-supabase.ts
+function withSupabase(config, handler) {
+	return async (req) => {
+		if (config.cors !== false && req.method === "OPTIONS") return new Response(null, {
+			status: 204,
+			headers: buildCorsHeaders(config.cors)
+		});
+		const { data: ctx, error } = await require_create_supabase_context.createSupabaseContext(req, config);
+		if (error) return Response.json({
+			error: error.message,
+			code: error.code
+		}, {
+			status: error.status,
+			headers: config.cors !== false ? buildCorsHeaders(config.cors) : {}
+		});
+		const response = await handler(req, ctx);
+		if (config.cors !== false) return addCorsHeaders(response, config.cors);
+		return response;
+	};
+}
+
+//#endregion
+exports.AuthError = require_verify_auth.AuthError;
+exports.EnvError = require_verify_auth.EnvError;
+exports.addCorsHeaders = addCorsHeaders;
+exports.buildCorsHeaders = buildCorsHeaders;
+exports.createAdminClient = require_verify_auth.createAdminClient;
+exports.createContextClient = require_verify_auth.createContextClient;
 exports.createSupabaseContext = require_create_supabase_context.createSupabaseContext;
-exports.extractCredentials = require_create_supabase_context.extractCredentials;
-exports.resolveEnv = require_create_supabase_context.resolveEnv;
-exports.verifyAuth = require_create_supabase_context.verifyAuth;
-exports.verifyCredentials = require_create_supabase_context.verifyCredentials;
-exports.withSupabase = require_with_supabase.withSupabase;
+exports.extractCredentials = require_verify_auth.extractCredentials;
+exports.resolveEnv = require_verify_auth.resolveEnv;
+exports.verifyAuth = require_verify_auth.verifyAuth;
+exports.verifyCredentials = require_verify_auth.verifyCredentials;
+exports.withSupabase = withSupabase;

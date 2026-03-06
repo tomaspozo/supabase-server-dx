@@ -1,5 +1,4 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_with_supabase = require('../with-supabase-CmdRD4CW.cjs');
 
 //#region src/wrappers/webhook.ts
 const encoder = new TextEncoder();
@@ -25,4 +24,3 @@ async function verifyWebhookSignature(payload, signature, secret) {
 
 //#endregion
 exports.verifyWebhookSignature = verifyWebhookSignature;
-exports.withSupabase = require_with_supabase.withSupabase;

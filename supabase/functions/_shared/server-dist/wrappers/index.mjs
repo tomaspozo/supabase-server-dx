@@ -1,5 +1,3 @@
-import { t as withSupabase } from "../with-supabase-BA8oKB35.mjs";
-
 //#region src/wrappers/webhook.ts
 const encoder = new TextEncoder();
 async function verifyWebhookSignature(payload, signature, secret) {
@@ -23,4 +21,4 @@ async function verifyWebhookSignature(payload, signature, secret) {
 }
 
 //#endregion
-export { verifyWebhookSignature, withSupabase };
+export { verifyWebhookSignature };

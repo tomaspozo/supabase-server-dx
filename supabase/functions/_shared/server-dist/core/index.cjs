@@ -1,10 +1,9 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_create_supabase_context = require('../create-supabase-context-D31apwMv.cjs');
+const require_verify_auth = require('../verify-auth-DkMNddsa.cjs');
 
-exports.createAdminClient = require_create_supabase_context.createAdminClient;
-exports.createContextClient = require_create_supabase_context.createContextClient;
-exports.createSupabaseContext = require_create_supabase_context.createSupabaseContext;
-exports.extractCredentials = require_create_supabase_context.extractCredentials;
-exports.resolveEnv = require_create_supabase_context.resolveEnv;
-exports.verifyAuth = require_create_supabase_context.verifyAuth;
-exports.verifyCredentials = require_create_supabase_context.verifyCredentials;
+exports.createAdminClient = require_verify_auth.createAdminClient;
+exports.createContextClient = require_verify_auth.createContextClient;
+exports.extractCredentials = require_verify_auth.extractCredentials;
+exports.resolveEnv = require_verify_auth.resolveEnv;
+exports.verifyAuth = require_verify_auth.verifyAuth;
+exports.verifyCredentials = require_verify_auth.verifyCredentials;

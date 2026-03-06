@@ -1,3 +1,3 @@
-import { a as createContextClient, i as extractCredentials, n as verifyAuth, o as createAdminClient, r as verifyCredentials, s as resolveEnv, t as createSupabaseContext } from "../create-supabase-context-DBzKCqYK.mjs";
+import { a as createAdminClient, i as createContextClient, n as verifyCredentials, o as resolveEnv, r as extractCredentials, t as verifyAuth } from "../verify-auth-BcWDx-TP.mjs";
 
-export { createAdminClient, createContextClient, createSupabaseContext, extractCredentials, resolveEnv, verifyAuth, verifyCredentials };
+export { createAdminClient, createContextClient, extractCredentials, resolveEnv, verifyAuth, verifyCredentials };
