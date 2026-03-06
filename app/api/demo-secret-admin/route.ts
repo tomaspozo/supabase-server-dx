@@ -1,20 +1,21 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
+import { createSupabaseContext } from "@/lib/supabase/context";
 
 export async function GET() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const secretKey = process.env.SB_SECRET_KEY!
+  const { data: ctx, error: ctxError } = await createSupabaseContext({
+    allow: "always",
+  });
 
-  const res = await fetch(`${supabaseUrl}/functions/v1/demo-secret-admin`, {
-    headers: {
-      apikey: secretKey,
-    },
-  })
-
-  const data = await res.json()
-
-  if (!res.ok) {
-    return NextResponse.json(data, { status: res.status })
+  if (ctxError) {
+    return NextResponse.json({ error: ctxError.message }, { status: 500 });
   }
 
-  return NextResponse.json(data)
+  const { data, error } =
+    await ctx.supabaseAdmin.functions.invoke("demo-secret-admin");
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json(data);
 }

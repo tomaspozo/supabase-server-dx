@@ -1,8 +1,10 @@
 {
   "imports": {
-    "@supabase/server": "./_shared/edge-functions-dist/index.mjs",
-    "@supabase/server/core": "./_shared/edge-functions-dist/core/index.mjs",
+    "@supabase/server": "./_shared/server-dist/index.mjs",
+    "@supabase/server/core": "./_shared/server-dist/core/index.mjs",
+    "@supabase/server/adapters/hono": "./_shared/server-dist/adapters/hono/index.mjs",
     "@supabase/supabase-js": "npm:@supabase/supabase-js@2.98.0",
+    "hono": "npm:hono@4",
     "jose": "npm:jose@6"
   }
 }

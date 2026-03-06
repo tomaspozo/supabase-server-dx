@@ -79,3 +79,7 @@ verify_jwt = false
 [functions.demo-context-primitive]
 enabled = true
 verify_jwt = false
+
+[functions.demo-hono]
+enabled = true
+verify_jwt = false

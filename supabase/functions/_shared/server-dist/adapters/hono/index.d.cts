@@ -1,12 +1,11 @@
 import { c as SupabaseContext, d as WithSupabaseConfig } from "../../types-D9O4XOqP.cjs";
-import { MiddlewareHandler } from "hono";
+import * as hono_types0 from "hono/types";
 
 //#region src/adapters/hono/middleware.d.ts
-declare module 'hono' {
-  interface ContextVariableMap {
+declare function supabase(config?: Omit<WithSupabaseConfig, 'cors'>): hono_types0.MiddlewareHandler<{
+  Variables: {
     supabase: SupabaseContext;
-  }
-}
-declare function supabase(config?: Omit<WithSupabaseConfig, 'cors'>): MiddlewareHandler;
+  };
+}, string, {}, Response>;
 //#endregion
 export { supabase };

@@ -18,6 +18,7 @@ interface Demo {
   description: string
   snippet: string
   useProxy?: boolean
+  path?: string
 }
 
 const demos: Demo[] = [
@@ -77,7 +78,7 @@ Deno.serve(
 )
 
 // Invoked via Next.js proxy: /api/demo-secret-admin
-// The proxy sends the secret key server-side`,
+// The proxy invokes with supabaseAdmin`,
   },
   {
     name: "demo-multi-auth",
@@ -125,6 +126,49 @@ Deno.serve(async (req) => {
     Response.json({ authType: ctx.authType, user: ctx.user })
   )
 })`,
+  },
+  {
+    name: "demo-hono-status",
+    path: "demo-hono/status",
+    title: "Hono Public Route",
+    authMode: "always",
+    description:
+      "Public route using the Hono adapter. No credentials required — returns a simple status check.",
+    snippet: `import { Hono } from "hono"
+import { cors } from "hono/cors"
+import { supabase } from "@supabase/server/adapters/hono"
+
+const app = new Hono().basePath("/demo-hono")
+app.use(cors())
+
+// Per-route middleware — no credentials required
+app.get("/status", supabase({ allow: "always" }), (c) => {
+  return c.json({ status: "ok", demo: "demo-hono" })
+})
+
+Deno.serve(app.fetch)`,
+  },
+  {
+    name: "demo-hono-me",
+    path: "demo-hono/me",
+    title: "Hono User Route",
+    authMode: "user",
+    description:
+      "Authenticated route using the Hono adapter. Requires a valid JWT and returns user info from c.var.supabase.",
+    snippet: `import { Hono } from "hono"
+import { cors } from "hono/cors"
+import { supabase } from "@supabase/server/adapters/hono"
+
+const app = new Hono().basePath("/demo-hono")
+app.use(cors())
+
+// Per-route middleware — valid JWT required
+app.get("/me", supabase({ allow: "user" }), (c) => {
+  const { user } = c.var.supabase
+  return c.json({ user })
+})
+
+Deno.serve(app.fetch)`,
   },
 ]
 
@@ -237,7 +281,7 @@ export function EdgeFunctionDemos() {
       } else {
         const supabase = createClient()
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/${demo.name}`,
+          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/${demo.path ?? demo.name}`,
           {
             headers: {
               "Authorization": `Bearer ${(await supabase.auth.getSession()).data.session?.access_token ?? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!}`,
