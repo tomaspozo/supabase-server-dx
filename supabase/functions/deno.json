@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "@supabase/server": "./_shared/edge-functions-dist/index.mjs",
+    "@supabase/server/core": "./_shared/edge-functions-dist/core/index.mjs",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.98.0",
+    "jose": "npm:jose@6"
+  }
+}

@@ -1,8 +1,57 @@
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { Button } from "@/components/ui/button";
+import { EdgeFunctionDemos } from "@/components/edge-function-demos";
+import { createSupabaseContext } from "@/lib/supabase/context";
+import { InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+
+function ProfileSkeleton() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="rounded-xl border bg-card p-6">
+          <div className="h-3 w-16 rounded bg-muted animate-pulse mb-3" />
+          <div className="h-4 w-32 rounded bg-muted animate-pulse" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+async function UserProfile() {
+  const { data: ctx, error } = await createSupabaseContext({ allow: "user" });
+
+  if (error) {
+    return (
+      <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
+        <InfoIcon size="16" strokeWidth={2} />
+        <Link href="/auth/login" className="underline underline-offset-4 hover:text-primary">
+          Sign in
+        </Link>{" "}
+        to view your profile and test authenticated demos.
+      </div>
+    );
+  }
+
+  const fields = [
+    { label: "Email", value: ctx.user?.email },
+    { label: "User ID", value: ctx.user?.id },
+    { label: "Role", value: ctx.user?.role },
+    { label: "Provider", value: (ctx.claims?.app_metadata as Record<string, string>)?.provider ?? "email" },
+  ];
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      {fields.map((field) => (
+        <div key={field.label} className="rounded-xl border bg-card p-6">
+          <p className="text-xs text-muted-foreground mb-1">{field.label}</p>
+          <p className="text-sm font-medium break-all">{field.value}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -11,8 +60,7 @@ export default function Home() {
         <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
           <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
             <div className="flex gap-5 items-center font-semibold">
-              <Link href="/">Home</Link>
-              <Link href="/protected" className="text-foreground/60 hover:text-foreground transition-colors">Protected</Link>
+              <Link href="/">Showcase</Link>
             </div>
             <div className="flex items-center gap-4">
               <ThemeSwitcher />
@@ -23,59 +71,30 @@ export default function Home() {
           </div>
         </nav>
 
-        <section className="flex-1 flex flex-col items-center justify-center gap-8 max-w-3xl p-5 py-20 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-            Your App Starts Here
-          </h1>
-          <p className="text-lg text-foreground/60 max-w-xl">
-            Authentication, database, and API layer — all wired up and ready to
-            build on.
-          </p>
-          <div className="flex gap-4">
-            <Button asChild size="lg">
-              <Link href="/auth/sign-up">Get Started</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/protected">Dashboard</Link>
-            </Button>
+        <div className="flex-1 w-full flex flex-col gap-8 max-w-5xl p-5 py-10">
+          <div className="flex flex-col gap-4">
+            <h2 className="font-bold text-2xl">Your profile</h2>
+            <Suspense fallback={<ProfileSkeleton />}>
+              <UserProfile />
+            </Suspense>
           </div>
-        </section>
 
-        <section className="w-full max-w-5xl px-5 pb-20">
-          <div className="grid gap-6 sm:grid-cols-3">
-            <div className="rounded-xl border bg-card p-6">
-              <h3 className="font-semibold mb-2">Authentication</h3>
-              <p className="text-sm text-muted-foreground">
-                Email/password sign-up, login, password reset — all configured
-                with Supabase Auth.
-              </p>
-            </div>
-            <div className="rounded-xl border bg-card p-6">
-              <h3 className="font-semibold mb-2">Database</h3>
-              <p className="text-sm text-muted-foreground">
-                Postgres with Row Level Security, schema isolation, and
-                migration workflow ready to go.
-              </p>
-            </div>
-            <div className="rounded-xl border bg-card p-6">
-              <h3 className="font-semibold mb-2">API Layer</h3>
-              <p className="text-sm text-muted-foreground">
-                RPC-first architecture with typed Supabase client and
-                server-side rendering support.
-              </p>
+          <div className="flex flex-col gap-4">
+            <h2 className="font-bold text-2xl">Edge Function Demos</h2>
+            <EdgeFunctionDemos />
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <h2 className="font-bold text-2xl">Test routes</h2>
+            <div className="flex gap-4">
+              <a href="/api/test-context-public" className="text-sm underline underline-offset-4 hover:text-primary">/api/test-context-public</a>
+              <a href="/api/test-context" className="text-sm underline underline-offset-4 hover:text-primary">/api/test-context</a>
+              <a href="/test-context" className="text-sm underline underline-offset-4 hover:text-primary">/test-context</a>
             </div>
           </div>
-        </section>
+        </div>
 
-        <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8">
-          <p className="text-foreground/40">
-            Edit{" "}
-            <code className="font-mono bg-muted px-1.5 py-0.5 rounded text-xs">
-              app/page.tsx
-            </code>{" "}
-            to get started
-          </p>
-        </footer>
+        <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8" />
       </div>
     </main>
   );

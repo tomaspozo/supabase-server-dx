@@ -55,3 +55,27 @@ verify_jwt = false
 [functions.send-email]
 enabled = true
 verify_jwt = false
+
+[functions.test-package]
+enabled = true
+verify_jwt = false
+
+[functions.demo-user-profile]
+enabled = true
+verify_jwt = false
+
+[functions.demo-public-status]
+enabled = true
+verify_jwt = false
+
+[functions.demo-secret-admin]
+enabled = true
+verify_jwt = false
+
+[functions.demo-multi-auth]
+enabled = true
+verify_jwt = false
+
+[functions.demo-context-primitive]
+enabled = true
+verify_jwt = false
