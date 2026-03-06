@@ -1,0 +1,7 @@
+{
+  "version": "1.1.0",
+  "mode": "new",
+  "frontend": true,
+  "supabaseCli": "2.76.15",
+  "setupHash": "b7997c32"
+}
