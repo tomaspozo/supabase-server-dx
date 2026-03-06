@@ -1,6 +1,7 @@
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { EdgeFunctionDemos } from "@/components/edge-function-demos";
+import { TestRouteDemos } from "@/components/test-route-demos";
 import { createSupabaseContext } from "@/lib/supabase/context";
 import { InfoIcon } from "lucide-react";
 import Link from "next/link";
@@ -85,12 +86,8 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-2xl">Test routes</h2>
-            <div className="flex gap-4">
-              <a href="/api/test-context-public" className="text-sm underline underline-offset-4 hover:text-primary">/api/test-context-public</a>
-              <a href="/api/test-context" className="text-sm underline underline-offset-4 hover:text-primary">/api/test-context</a>
-              <a href="/test-context" className="text-sm underline underline-offset-4 hover:text-primary">/test-context</a>
-            </div>
+            <h2 className="font-bold text-2xl">Test Routes</h2>
+            <TestRouteDemos />
           </div>
         </div>
 

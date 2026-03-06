@@ -1,0 +1,212 @@
+"use client"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card"
+import {
+  CollapsibleSnippet,
+  AuthBadge,
+  PulsingDot,
+} from "@/components/edge-function-demos"
+
+interface TestRouteDemo {
+  name: string
+  title: string
+  authMode: string
+  routeType: "api" | "page"
+  description: string
+  snippet: string
+  path: string
+}
+
+const demos: TestRouteDemo[] = [
+  {
+    name: "test-context-public",
+    title: "Public Context",
+    authMode: "always",
+    routeType: "api",
+    description:
+      "Public API route using createSupabaseContext. Returns auth type, client flags, and user info without requiring authentication.",
+    path: "/api/test-context-public",
+    snippet: `import { createSupabaseContext } from "@/lib/supabase/context"
+
+export async function GET() {
+  const { data: ctx, error } = await createSupabaseContext({ allow: "always" })
+  if (error) {
+    return Response.json({ ok: false, error: error.message }, { status: 500 })
+  }
+  return Response.json({
+    ok: true,
+    authType: ctx.authType,
+    hasSupabase: !!ctx.supabase,
+    hasAdmin: !!ctx.supabaseAdmin,
+    user: ctx.user,
+  })
+}`,
+  },
+  {
+    name: "test-context",
+    title: "User Context",
+    authMode: "user",
+    routeType: "api",
+    description:
+      "Authenticated API route. Requires a valid session and returns auth type, user, claims, and client flags.",
+    path: "/api/test-context",
+    snippet: `import { createSupabaseContext } from "@/lib/supabase/context"
+
+export async function GET() {
+  const { data: ctx, error } = await createSupabaseContext({ allow: "user" })
+  if (error) {
+    return Response.json({ ok: false, error: error.message }, { status: 401 })
+  }
+  return Response.json({
+    ok: true,
+    authType: ctx.authType,
+    user: ctx.user,
+    claims: ctx.claims,
+    hasSupabase: !!ctx.supabase,
+    hasAdmin: !!ctx.supabaseAdmin,
+  })
+}`,
+  },
+  {
+    name: "test-context-page",
+    title: "User Context (Page)",
+    authMode: "user",
+    routeType: "page",
+    description:
+      "Server Component page using createSupabaseContext. Renders the context as JSON or shows an auth error. Opens in a new tab.",
+    path: "/test-context",
+    snippet: `import { createSupabaseContext } from "@/lib/supabase/context"
+
+async function ContextResult() {
+  const { data: ctx, error } = await createSupabaseContext({ allow: "user" })
+  if (error) {
+    return <p>Authentication required. Sign in to view context.</p>
+  }
+  return (
+    <pre>
+      {JSON.stringify(
+        { authType: ctx.authType, user: ctx.user, claims: ctx.claims },
+        null, 2
+      )}
+    </pre>
+  )
+}`,
+  },
+]
+
+function RouteTypeBadge({ type }: { type: "api" | "page" }) {
+  return (
+    <span className="inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+      {type === "api" ? "API Route" : "Page"}
+    </span>
+  )
+}
+
+export function TestRouteDemos() {
+  const [results, setResults] = useState<
+    Record<string, { data?: unknown; error?: string; loading?: boolean }>
+  >({})
+
+  async function runDemo(demo: TestRouteDemo) {
+    if (demo.routeType === "page") {
+      window.open(demo.path, "_blank")
+      return
+    }
+
+    setResults((prev) => ({ ...prev, [demo.name]: { loading: true } }))
+
+    try {
+      const res = await fetch(demo.path)
+      const data = await res.json()
+
+      if (!res.ok) {
+        setResults((prev) => ({
+          ...prev,
+          [demo.name]: { error: JSON.stringify(data, null, 2) },
+        }))
+        return
+      }
+
+      setResults((prev) => ({ ...prev, [demo.name]: { data } }))
+    } catch (err) {
+      setResults((prev) => ({
+        ...prev,
+        [demo.name]: {
+          error: err instanceof Error ? err.message : String(err),
+        },
+      }))
+    }
+  }
+
+  return (
+    <div className="grid gap-6 sm:grid-cols-2">
+      {demos.map((demo) => {
+        const result = results[demo.name]
+        return (
+          <Card key={demo.name} className="flex flex-col">
+            <CardHeader>
+              <div className="flex items-center justify-between gap-2">
+                <CardTitle className="text-base">{demo.title}</CardTitle>
+                <div className="flex items-center gap-1.5">
+                  <RouteTypeBadge type={demo.routeType} />
+                  <AuthBadge mode={demo.authMode} />
+                </div>
+              </div>
+              <CardDescription>{demo.description}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 space-y-4">
+              <CollapsibleSnippet snippet={demo.snippet} />
+
+              {result?.loading && (
+                <p className="flex items-center text-sm text-muted-foreground">
+                  <PulsingDot />
+                  Running...
+                </p>
+              )}
+
+              {result?.error && (
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">
+                    Error
+                  </span>
+                  <pre className="rounded-md border border-destructive/20 bg-destructive/5 p-3 text-xs text-destructive whitespace-pre-wrap break-all">
+                    {result.error}
+                  </pre>
+                </div>
+              )}
+
+              {"data" in (result ?? {}) && (
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">
+                    Response
+                  </span>
+                  <pre className="rounded-md border-l-2 border-primary/20 bg-muted p-3 text-xs whitespace-pre-wrap break-all max-h-48 overflow-auto">
+                    {JSON.stringify(result!.data, null, 2)}
+                  </pre>
+                </div>
+              )}
+
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full sm:w-auto"
+                onClick={() => runDemo(demo)}
+                disabled={result?.loading}
+              >
+                {demo.routeType === "page" ? "Open in new tab" : "Run"}
+              </Button>
+            </CardContent>
+          </Card>
+        )
+      })}
+    </div>
+  )
+}
