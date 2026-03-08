@@ -1,6 +1,7 @@
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { EdgeFunctionDemosServer } from "@/components/edge-function-demos-server";
+import { HonoDemosServer } from "@/components/hono-demos-server";
 import { TestRouteDemosServer } from "@/components/test-route-demos-server";
 import { createSupabaseContext } from "@/lib/supabase/context";
 import { InfoIcon } from "lucide-react";
@@ -81,14 +82,21 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-2xl">Edge Function Demos</h2>
+            <h2 className="font-bold text-2xl">Edge Functions</h2>
             <Suspense>
               <EdgeFunctionDemosServer />
             </Suspense>
           </div>
 
           <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-2xl">Test Routes</h2>
+            <h2 className="font-bold text-2xl">Hono</h2>
+            <Suspense>
+              <HonoDemosServer />
+            </Suspense>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <h2 className="font-bold text-2xl">Next.js SSR</h2>
             <Suspense>
               <TestRouteDemosServer />
             </Suspense>

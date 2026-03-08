@@ -1,15 +1,15 @@
 import { highlightCode } from "@/lib/shiki"
-import { edgeFunctionDemos } from "@/lib/demos"
+import { honoDemos } from "@/lib/demos"
 import { EdgeFunctionDemos } from "@/components/edge-function-demos"
 
-export async function EdgeFunctionDemosServer() {
+export async function HonoDemosServer() {
   const highlightedSnippets: Record<string, string> = {}
 
   await Promise.all(
-    edgeFunctionDemos.map(async (demo) => {
+    honoDemos.map(async (demo) => {
       highlightedSnippets[demo.name] = await highlightCode(demo.snippet, "typescript")
     })
   )
 
-  return <EdgeFunctionDemos demos={edgeFunctionDemos} highlightedSnippets={highlightedSnippets} />
+  return <EdgeFunctionDemos demos={honoDemos} highlightedSnippets={highlightedSnippets} />
 }

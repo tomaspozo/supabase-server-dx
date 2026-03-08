@@ -10,7 +10,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card"
-import { edgeFunctionDemos, type Demo } from "@/lib/demos"
+import { type Demo } from "@/lib/demos"
 
 export function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -116,8 +116,10 @@ export function PulsingDot() {
 }
 
 export function EdgeFunctionDemos({
+  demos,
   highlightedSnippets,
 }: {
+  demos: Demo[]
   highlightedSnippets?: Record<string, string>
 }) {
   const [results, setResults] = useState<Record<string, { data?: unknown; error?: string; loading?: boolean }>>({})
@@ -170,7 +172,7 @@ export function EdgeFunctionDemos({
 
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      {edgeFunctionDemos.map((demo) => {
+      {demos.map((demo) => {
         const result = results[demo.name]
         return (
           <Card key={demo.name} className="flex flex-col">

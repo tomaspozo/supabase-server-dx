@@ -124,6 +124,9 @@ Deno.serve(async (req) => {
   )
 })`,
   },
+]
+
+export const honoDemos: Demo[] = [
   {
     name: "demo-hono-status",
     path: "demo-hono/status",

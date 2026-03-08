@@ -5,7 +5,7 @@ import { createMiddleware } from "hono/factory";
 //#region src/adapters/hono/middleware.ts
 function supabase(config) {
 	return createMiddleware(async (c, next) => {
-		if (c.var.supabase) {
+		if (c.var.supabaseContext) {
 			await next();
 			return;
 		}
@@ -14,7 +14,7 @@ function supabase(config) {
 			message: error.message,
 			cause: error
 		});
-		c.set("supabase", ctx);
+		c.set("supabaseContext", ctx);
 		await next();
 	});
 }
