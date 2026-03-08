@@ -1,7 +1,7 @@
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { EdgeFunctionDemos } from "@/components/edge-function-demos";
-import { TestRouteDemos } from "@/components/test-route-demos";
+import { EdgeFunctionDemosServer } from "@/components/edge-function-demos-server";
+import { TestRouteDemosServer } from "@/components/test-route-demos-server";
 import { createSupabaseContext } from "@/lib/supabase/context";
 import { InfoIcon } from "lucide-react";
 import Link from "next/link";
@@ -82,12 +82,16 @@ export default function Home() {
 
           <div className="flex flex-col gap-4">
             <h2 className="font-bold text-2xl">Edge Function Demos</h2>
-            <EdgeFunctionDemos />
+            <Suspense>
+              <EdgeFunctionDemosServer />
+            </Suspense>
           </div>
 
           <div className="flex flex-col gap-4">
             <h2 className="font-bold text-2xl">Test Routes</h2>
-            <TestRouteDemos />
+            <Suspense>
+              <TestRouteDemosServer />
+            </Suspense>
           </div>
         </div>
 

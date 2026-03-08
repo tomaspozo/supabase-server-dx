@@ -14,93 +14,7 @@ import {
   AuthBadge,
   PulsingDot,
 } from "@/components/edge-function-demos"
-
-interface TestRouteDemo {
-  name: string
-  title: string
-  authMode: string
-  routeType: "api" | "page"
-  description: string
-  snippet: string
-  path: string
-}
-
-const demos: TestRouteDemo[] = [
-  {
-    name: "test-context-public",
-    title: "Public Context",
-    authMode: "always",
-    routeType: "api",
-    description:
-      "Public API route using createSupabaseContext. Returns auth type, client flags, and user info without requiring authentication.",
-    path: "/api/test-context-public",
-    snippet: `import { createSupabaseContext } from "@/lib/supabase/context"
-
-export async function GET() {
-  const { data: ctx, error } = await createSupabaseContext({ allow: "always" })
-  if (error) {
-    return Response.json({ ok: false, error: error.message }, { status: 500 })
-  }
-  return Response.json({
-    ok: true,
-    authType: ctx.authType,
-    hasSupabase: !!ctx.supabase,
-    hasAdmin: !!ctx.supabaseAdmin,
-    user: ctx.user,
-  })
-}`,
-  },
-  {
-    name: "test-context",
-    title: "User Context",
-    authMode: "user",
-    routeType: "api",
-    description:
-      "Authenticated API route. Requires a valid session and returns auth type, user, claims, and client flags.",
-    path: "/api/test-context",
-    snippet: `import { createSupabaseContext } from "@/lib/supabase/context"
-
-export async function GET() {
-  const { data: ctx, error } = await createSupabaseContext({ allow: "user" })
-  if (error) {
-    return Response.json({ ok: false, error: error.message }, { status: 401 })
-  }
-  return Response.json({
-    ok: true,
-    authType: ctx.authType,
-    user: ctx.user,
-    claims: ctx.claims,
-    hasSupabase: !!ctx.supabase,
-    hasAdmin: !!ctx.supabaseAdmin,
-  })
-}`,
-  },
-  {
-    name: "test-context-page",
-    title: "User Context (Page)",
-    authMode: "user",
-    routeType: "page",
-    description:
-      "Server Component page using createSupabaseContext. Renders the context as JSON or shows an auth error. Opens in a new tab.",
-    path: "/test-context",
-    snippet: `import { createSupabaseContext } from "@/lib/supabase/context"
-
-async function ContextResult() {
-  const { data: ctx, error } = await createSupabaseContext({ allow: "user" })
-  if (error) {
-    return <p>Authentication required. Sign in to view context.</p>
-  }
-  return (
-    <pre>
-      {JSON.stringify(
-        { authType: ctx.authType, user: ctx.user, claims: ctx.claims },
-        null, 2
-      )}
-    </pre>
-  )
-}`,
-  },
-]
+import { testRouteDemos, type TestRouteDemo } from "@/lib/demos"
 
 function RouteTypeBadge({ type }: { type: "api" | "page" }) {
   return (
@@ -110,7 +24,11 @@ function RouteTypeBadge({ type }: { type: "api" | "page" }) {
   )
 }
 
-export function TestRouteDemos() {
+export function TestRouteDemos({
+  highlightedSnippets,
+}: {
+  highlightedSnippets?: Record<string, string>
+}) {
   const [results, setResults] = useState<
     Record<string, { data?: unknown; error?: string; loading?: boolean }>
   >({})
@@ -148,7 +66,7 @@ export function TestRouteDemos() {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      {demos.map((demo) => {
+      {testRouteDemos.map((demo) => {
         const result = results[demo.name]
         return (
           <Card key={demo.name} className="flex flex-col">
@@ -163,7 +81,10 @@ export function TestRouteDemos() {
               <CardDescription>{demo.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 space-y-4">
-              <CollapsibleSnippet snippet={demo.snippet} />
+              <CollapsibleSnippet
+                snippet={demo.snippet}
+                highlightedHtml={highlightedSnippets?.[demo.name]}
+              />
 
               {result?.loading && (
                 <p className="flex items-center text-sm text-muted-foreground">

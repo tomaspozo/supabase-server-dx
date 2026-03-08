@@ -10,167 +10,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card"
-
-interface Demo {
-  name: string
-  title: string
-  authMode: string
-  description: string
-  snippet: string
-  useProxy?: boolean
-  path?: string
-}
-
-const demos: Demo[] = [
-  {
-    name: "demo-user-profile",
-    title: "User Profile",
-    authMode: "user",
-    description:
-      "Requires a valid JWT. Returns your identity from the Supabase context. Uses withSupabase.",
-    snippet: `import { withSupabase } from "@supabase/server"
-
-Deno.serve(
-  withSupabase({ allow: "user" }, async (_req, ctx) => {
-    return Response.json({
-      authType: ctx.authType,
-      user: ctx.user,
-    })
-  })
-)`,
-  },
-  {
-    name: "demo-public-status",
-    title: "Public Status",
-    authMode: "always",
-    description:
-      "Fully public, no auth needed. Returns server time and Deno runtime info. Uses withSupabase.",
-    snippet: `import { withSupabase } from "@supabase/server"
-
-Deno.serve(
-  withSupabase({ allow: "always" }, async (_req, ctx) => {
-    return Response.json({
-      authType: ctx.authType,
-      serverTime: new Date().toISOString(),
-      runtime: \`Deno \${Deno.version.deno}\`,
-    })
-  })
-)`,
-  },
-  {
-    name: "demo-secret-admin",
-    title: "Admin (Secret Key)",
-    authMode: "secret",
-    description:
-      "Requires the secret API key. Lists users via admin client. Invoked through a server-side proxy.",
-    useProxy: true,
-    snippet: `import { withSupabase } from "@supabase/server"
-
-Deno.serve(
-  withSupabase({ allow: "secret" }, async (_req, ctx) => {
-    const { data } = await ctx.supabaseAdmin
-      .auth.admin.listUsers({ perPage: 1, page: 1 })
-    return Response.json({
-      authType: ctx.authType,
-      totalUsers: data?.users?.length ?? null,
-    })
-  })
-)
-
-// Invoked via Next.js proxy: /api/demo-secret-admin
-// The proxy invokes with supabaseAdmin`,
-  },
-  {
-    name: "demo-multi-auth",
-    title: "Multi-Auth",
-    authMode: "user, always",
-    description:
-      'Accepts both authenticated and anonymous requests. Returns a personalized or generic greeting. Uses withSupabase.',
-    snippet: `import { withSupabase } from "@supabase/server"
-
-Deno.serve(
-  withSupabase({ allow: ["user", "always"] }, async (_req, ctx) => {
-    const greeting = ctx.user
-      ? \`Hello, \${ctx.user.email ?? ctx.user.id}!\`
-      : "Hello, anonymous visitor!"
-    return Response.json({ authType: ctx.authType, greeting })
-  })
-)`,
-  },
-  {
-    name: "demo-context-primitive",
-    title: "Context Primitive",
-    authMode: "user",
-    description:
-      "Same as User Profile but uses createSupabaseContext directly with manual CORS and error handling.",
-    snippet: `import {
-  createSupabaseContext,
-  buildCorsHeaders,
-  addCorsHeaders,
-} from "@supabase/server"
-
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS")
-    return new Response(null, { status: 204, headers: buildCorsHeaders() })
-
-  const { data: ctx, error } = await createSupabaseContext(req, {
-    allow: "user",
-  })
-
-  if (error)
-    return addCorsHeaders(
-      Response.json({ error: error.message }, { status: error.status })
-    )
-
-  return addCorsHeaders(
-    Response.json({ authType: ctx.authType, user: ctx.user })
-  )
-})`,
-  },
-  {
-    name: "demo-hono-status",
-    path: "demo-hono/status",
-    title: "Hono Public Route",
-    authMode: "always",
-    description:
-      "Public route using the Hono adapter. No credentials required — returns a simple status check.",
-    snippet: `import { Hono } from "hono"
-import { cors } from "hono/cors"
-import { supabase } from "@supabase/server/adapters/hono"
-
-const app = new Hono().basePath("/demo-hono")
-app.use(cors())
-
-// Per-route middleware — no credentials required
-app.get("/status", supabase({ allow: "always" }), (c) => {
-  return c.json({ status: "ok", demo: "demo-hono" })
-})
-
-Deno.serve(app.fetch)`,
-  },
-  {
-    name: "demo-hono-me",
-    path: "demo-hono/me",
-    title: "Hono User Route",
-    authMode: "user",
-    description:
-      "Authenticated route using the Hono adapter. Requires a valid JWT and returns user info from c.var.supabase.",
-    snippet: `import { Hono } from "hono"
-import { cors } from "hono/cors"
-import { supabase } from "@supabase/server/adapters/hono"
-
-const app = new Hono().basePath("/demo-hono")
-app.use(cors())
-
-// Per-route middleware — valid JWT required
-app.get("/me", supabase({ allow: "user" }), (c) => {
-  const { user } = c.var.supabase
-  return c.json({ user })
-})
-
-Deno.serve(app.fetch)`,
-  },
-]
+import { edgeFunctionDemos, type Demo } from "@/lib/demos"
 
 export function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -192,34 +32,50 @@ export function ChevronIcon({ open }: { open: boolean }) {
   )
 }
 
-export function CollapsibleSnippet({ snippet }: { snippet: string }) {
+export function CollapsibleSnippet({
+  snippet,
+  highlightedHtml,
+}: {
+  snippet: string
+  highlightedHtml?: string
+}) {
   const [open, setOpen] = useState(false)
-  const codeRef = useRef<HTMLPreElement>(null)
+  const codeRef = useRef<HTMLDivElement & HTMLPreElement>(null)
   const [needsCollapse, setNeedsCollapse] = useState(false)
 
   useEffect(() => {
     if (codeRef.current) {
       setNeedsCollapse(codeRef.current.scrollHeight > 144)
     }
-  }, [snippet])
+  }, [snippet, highlightedHtml])
 
   return (
     <div className="relative">
-      <pre
-        ref={codeRef}
-        className={`rounded-md border bg-muted/40 p-4 text-xs leading-relaxed font-mono text-muted-foreground overflow-x-auto transition-[max-height] duration-300 ease-in-out ${
-          !open && needsCollapse ? "max-h-36 overflow-hidden" : "max-h-112 overflow-auto"
-        }`}
-      >
-        <code>{snippet}</code>
-      </pre>
+      {highlightedHtml ? (
+        <div
+          ref={codeRef}
+          className={`shiki-wrapper text-xs leading-relaxed overflow-x-auto transition-[max-height] duration-300 ease-in-out ${
+            !open && needsCollapse ? "max-h-36 overflow-hidden" : "max-h-112 overflow-auto"
+          }`}
+          dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+        />
+      ) : (
+        <pre
+          ref={codeRef}
+          className={`rounded-md border bg-muted/40 p-4 text-xs leading-relaxed font-mono text-muted-foreground overflow-x-auto transition-[max-height] duration-300 ease-in-out ${
+            !open && needsCollapse ? "max-h-36 overflow-hidden" : "max-h-112 overflow-auto"
+          }`}
+        >
+          <code>{snippet}</code>
+        </pre>
+      )}
       {needsCollapse && (
         <button
           type="button"
           onClick={() => setOpen(!open)}
           className={`text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1 ${
             !open
-              ? "absolute inset-x-0 bottom-0 flex items-end justify-center bg-linear-to-t from-background to-transparent pt-8 pb-1.5 rounded-b-md"
+              ? "absolute inset-x-0 bottom-0 flex items-end justify-center bg-linear-to-t from-white from-15% dark:from-card dark:from-15% to-transparent pt-16 pb-2"
               : "mt-1.5 w-full justify-center"
           }`}
         >
@@ -259,7 +115,11 @@ export function PulsingDot() {
   )
 }
 
-export function EdgeFunctionDemos() {
+export function EdgeFunctionDemos({
+  highlightedSnippets,
+}: {
+  highlightedSnippets?: Record<string, string>
+}) {
   const [results, setResults] = useState<Record<string, { data?: unknown; error?: string; loading?: boolean }>>({})
 
   async function runDemo(demo: Demo) {
@@ -310,7 +170,7 @@ export function EdgeFunctionDemos() {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2">
-      {demos.map((demo) => {
+      {edgeFunctionDemos.map((demo) => {
         const result = results[demo.name]
         return (
           <Card key={demo.name} className="flex flex-col">
@@ -322,7 +182,10 @@ export function EdgeFunctionDemos() {
               <CardDescription>{demo.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 space-y-4">
-              <CollapsibleSnippet snippet={demo.snippet} />
+              <CollapsibleSnippet
+                snippet={demo.snippet}
+                highlightedHtml={highlightedSnippets?.[demo.name]}
+              />
 
               {result?.loading && (
                 <p className="flex items-center text-sm text-muted-foreground">
