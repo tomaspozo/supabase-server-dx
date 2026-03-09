@@ -29,7 +29,10 @@ async function UserProfile() {
     return (
       <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
         <InfoIcon size="16" strokeWidth={2} />
-        <Link href="/auth/login" className="underline underline-offset-4 hover:text-primary">
+        <Link
+          href="/auth/login"
+          className="underline underline-offset-4 hover:text-primary"
+        >
           Sign in
         </Link>{" "}
         to view your profile and test authenticated demos.
@@ -41,7 +44,12 @@ async function UserProfile() {
     { label: "Email", value: ctx.user?.email },
     { label: "User ID", value: ctx.user?.id },
     { label: "Role", value: ctx.user?.role },
-    { label: "Provider", value: (ctx.claims?.app_metadata as Record<string, string>)?.provider ?? "email" },
+    {
+      label: "Provider",
+      value:
+        (ctx.claims?.app_metadata as Record<string, string>)?.provider ??
+        "email",
+    },
   ];
 
   return (
@@ -79,13 +87,6 @@ export default function Home() {
             <h2 className="font-bold text-2xl">Your profile</h2>
             <Suspense fallback={<ProfileSkeleton />}>
               <UserProfile />
-            </Suspense>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <h2 className="font-bold text-2xl">Use Cases</h2>
-            <Suspense>
-              <CaseDemosServer />
             </Suspense>
           </div>
 
