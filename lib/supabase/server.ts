@@ -1,3 +1,12 @@
+/**
+ * Cookie-based Supabase client for Server Components, Server Actions, and Route Handlers.
+ *
+ * Uses @supabase/ssr to create a client that reads/writes auth cookies directly.
+ * Best for auth flows that need cookie mutation (e.g., auth/confirm, sign-out).
+ *
+ * For JWKS-verified auth with user/claims context, use createSupabaseContext() from ./context.ts.
+ * For session refresh in the proxy middleware, see ./proxy.ts.
+ */
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 

@@ -2,13 +2,14 @@
  * Send Email — handles all Supabase Auth emails via Resend + React Email
  *
  * Called by queue-worker (via _admin_enqueue_task → pg_net → queue-worker).
- * Uses withSupabase({ allow: 'private' }) since only queue-worker/service_role invokes it.
+ * Uses withSupabase({ allow: 'secret' }) since only queue-worker/service_role invokes it.
  */
 
 import * as React from 'npm:react@18.3.1'
 import { Resend } from 'npm:resend@4.0.0'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
-import { withSupabase } from '../_shared/withSupabase.ts'
+import { withSupabase } from '@supabase/server'
+import { env } from '../_shared/env.ts'
 import { ConfirmationEmail } from './_templates/confirmation.tsx'
 import { MagicLinkEmail } from './_templates/magic-link.tsx'
 import { RecoveryEmail } from './_templates/recovery.tsx'
@@ -62,7 +63,7 @@ function buildVerificationUrl(
 }
 
 Deno.serve(
-  withSupabase({ allow: 'private' }, async (req, _ctx) => {
+  withSupabase({ allow: 'secret', env }, async (req, _ctx) => {
     if (req.method !== 'POST') {
       return new Response('Method not allowed', { status: 405 })
     }
