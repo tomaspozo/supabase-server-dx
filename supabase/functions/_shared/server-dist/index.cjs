@@ -1,6 +1,6 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_verify_auth = require('./verify-auth-DkMNddsa.cjs');
-const require_create_supabase_context = require('./create-supabase-context-Cu2Xbq2B.cjs');
+const require_verify_auth = require('./verify-auth-Cs7kMug3.cjs');
+const require_create_supabase_context = require('./create-supabase-context-aadlBH3s.cjs');
 
 //#region src/cors.ts
 function buildCorsHeaders(config) {

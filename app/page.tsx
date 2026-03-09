@@ -1,5 +1,6 @@
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { CaseDemosServer } from "@/components/case-demos-server";
 import { EdgeFunctionDemosServer } from "@/components/edge-function-demos-server";
 import { HonoDemosServer } from "@/components/hono-demos-server";
 import { TestRouteDemosServer } from "@/components/test-route-demos-server";
@@ -78,6 +79,13 @@ export default function Home() {
             <h2 className="font-bold text-2xl">Your profile</h2>
             <Suspense fallback={<ProfileSkeleton />}>
               <UserProfile />
+            </Suspense>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <h2 className="font-bold text-2xl">Use Cases</h2>
+            <Suspense>
+              <CaseDemosServer />
             </Suspense>
           </div>
 

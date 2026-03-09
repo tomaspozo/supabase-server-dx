@@ -27,18 +27,15 @@ function getEnvVar(name) {
 }
 function parseNamedKeys(raw) {
 	if (!raw) return [];
-	return raw.split(",").map((entry) => {
-		const trimmed = entry.trim();
-		const colonIndex = trimmed.indexOf(":");
-		if (colonIndex > 0) return {
-			name: trimmed.slice(0, colonIndex),
-			key: trimmed.slice(colonIndex + 1)
-		};
-		return {
-			name: "default",
-			key: trimmed
-		};
-	});
+	try {
+		const parsed = JSON.parse(raw);
+		return Object.entries(parsed).map(([name, key]) => ({
+			name,
+			key
+		}));
+	} catch {
+		return [];
+	}
 }
 function parseJwks(raw) {
 	if (!raw) return null;

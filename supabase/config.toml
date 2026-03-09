@@ -83,3 +83,11 @@ verify_jwt = false
 [functions.demo-hono]
 enabled = true
 verify_jwt = false
+
+[functions.case-ef]
+enabled = true
+verify_jwt = false
+
+[functions.case-hono]
+enabled = true
+verify_jwt = false

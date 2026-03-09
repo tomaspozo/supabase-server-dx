@@ -1,5 +1,5 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_verify_auth = require('../verify-auth-DkMNddsa.cjs');
+const require_verify_auth = require('../verify-auth-Cs7kMug3.cjs');
 
 exports.createAdminClient = require_verify_auth.createAdminClient;
 exports.createContextClient = require_verify_auth.createContextClient;
