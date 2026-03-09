@@ -25,7 +25,7 @@ import {
   type AllowWithKey,
   type SupabaseContext,
   type SupabaseEnv,
-} from "@supabase/edge-functions";
+} from "@/supabase/functions/_shared/server-dist/index.mjs";
 
 const BASE64_PREFIX = "base64-";
 
