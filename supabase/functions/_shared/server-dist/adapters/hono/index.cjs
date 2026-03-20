@@ -1,5 +1,5 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_create_supabase_context = require('../../create-supabase-context-DEYBwzzO.cjs');
+const require_create_supabase_context = require('../../create-supabase-context-CNFvRJ--.cjs');
 let hono_http_exception = require("hono/http-exception");
 let hono_factory = require("hono/factory");
 

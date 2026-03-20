@@ -1,4 +1,4 @@
-import { a as createAdminClient, c as EnvError, i as createContextClient, s as AuthError, t as verifyAuth } from "./verify-auth-DsPqpkOT.mjs";
+import { a as createAdminClient, c as EnvError, i as createContextClient, s as AuthError, t as verifyAuth } from "./verify-auth-DxUT0XoT.mjs";
 
 //#region src/create-supabase-context.ts
 async function createSupabaseContext(request, options) {
@@ -13,8 +13,8 @@ async function createSupabaseContext(request, options) {
 	try {
 		return {
 			data: {
-				supabase: createContextClient(auth.token, options?.env),
-				supabaseAdmin: createAdminClient(options?.env),
+				supabase: createContextClient(auth.token, options?.env, auth.keyName),
+				supabaseAdmin: createAdminClient(options?.env, auth.keyName),
 				userClaims: auth.userClaims,
 				claims: auth.claims,
 				authType: auth.authType

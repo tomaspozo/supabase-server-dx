@@ -1,4 +1,4 @@
-import { i as Credentials, n as AllowWithKey, r as AuthResult, s as SupabaseEnv } from "./types-6aN-HUPs.cjs";
+import { i as Credentials, n as AllowWithKey, r as AuthResult, s as SupabaseEnv } from "./types-DEHVdocP.cjs";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 //#region src/errors.d.ts
@@ -52,9 +52,9 @@ declare function verifyAuth(request: Request, options: VerifyAuthOptions): Promi
 }>;
 //#endregion
 //#region src/core/create-context-client.d.ts
-declare function createContextClient(token?: string | null, env?: Partial<SupabaseEnv>): SupabaseClient;
+declare function createContextClient(token?: string | null, env?: Partial<SupabaseEnv>, keyName?: string | null): SupabaseClient;
 //#endregion
 //#region src/core/create-admin-client.d.ts
-declare function createAdminClient(env?: Partial<SupabaseEnv>): SupabaseClient;
+declare function createAdminClient(env?: Partial<SupabaseEnv>, keyName?: string | null): SupabaseClient;
 //#endregion
 export { extractCredentials as a, EnvError as c, verifyCredentials as i, createContextClient as n, resolveEnv as o, verifyAuth as r, AuthError as s, createAdminClient as t };

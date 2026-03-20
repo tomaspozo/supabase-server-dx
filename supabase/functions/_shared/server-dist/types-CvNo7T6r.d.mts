@@ -21,6 +21,7 @@ interface AuthResult {
   token: string | null;
   userClaims: UserClaims | null;
   claims: JWTClaims | null;
+  keyName: string | null;
 }
 interface JWTClaims {
   sub: string;

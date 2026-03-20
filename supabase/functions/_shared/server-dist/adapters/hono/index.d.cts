@@ -1,4 +1,4 @@
-import { l as WithSupabaseConfig, o as SupabaseContext } from "../../types-6aN-HUPs.cjs";
+import { l as WithSupabaseConfig, o as SupabaseContext } from "../../types-DEHVdocP.cjs";
 import * as hono_types0 from "hono/types";
 
 //#region src/adapters/hono/middleware.d.ts

@@ -1,4 +1,4 @@
-const require_verify_auth = require('./verify-auth-BQ71J8FQ.cjs');
+const require_verify_auth = require('./verify-auth-6a1UPrFz.cjs');
 
 //#region src/create-supabase-context.ts
 async function createSupabaseContext(request, options) {
@@ -13,8 +13,8 @@ async function createSupabaseContext(request, options) {
 	try {
 		return {
 			data: {
-				supabase: require_verify_auth.createContextClient(auth.token, options?.env),
-				supabaseAdmin: require_verify_auth.createAdminClient(options?.env),
+				supabase: require_verify_auth.createContextClient(auth.token, options?.env, auth.keyName),
+				supabaseAdmin: require_verify_auth.createAdminClient(options?.env, auth.keyName),
 				userClaims: auth.userClaims,
 				claims: auth.claims,
 				authType: auth.authType

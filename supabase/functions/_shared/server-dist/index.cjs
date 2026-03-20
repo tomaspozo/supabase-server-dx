@@ -1,6 +1,6 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_verify_auth = require('./verify-auth-BQ71J8FQ.cjs');
-const require_create_supabase_context = require('./create-supabase-context-DEYBwzzO.cjs');
+const require_verify_auth = require('./verify-auth-6a1UPrFz.cjs');
+const require_create_supabase_context = require('./create-supabase-context-CNFvRJ--.cjs');
 let _supabase_supabase_js_cors = require("@supabase/supabase-js/cors");
 
 //#region src/cors.ts
