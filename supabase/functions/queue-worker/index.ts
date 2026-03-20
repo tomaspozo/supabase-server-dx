@@ -12,8 +12,8 @@
 // @ts-nocheck
 import { withSupabase } from "@supabase/server";
 
-Deno.serve(
-  withSupabase({ allow: "secret" }, async (_req, ctx) => {
+export default {
+  fetch: withSupabase({ allow: "secret" }, async (_req, ctx) => {
     const { data: messages, error: readError } = await ctx.supabaseAdmin.rpc(
       "_admin_queue_read",
       { qty: 5, vt: 30 },
@@ -62,4 +62,4 @@ Deno.serve(
 
     return Response.json({ processed, total: messages.length });
   }),
-);
+};

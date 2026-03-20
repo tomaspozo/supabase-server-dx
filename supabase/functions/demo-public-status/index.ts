@@ -1,7 +1,7 @@
 import { withSupabase } from "@supabase/server"
 
-Deno.serve(
-  withSupabase(
+export default {
+  fetch: withSupabase(
     { allow: "always" },
     async (_req, ctx) => {
       return Response.json({
@@ -12,5 +12,5 @@ Deno.serve(
         user: ctx.user,
       })
     }
-  )
-)
+  ),
+}

@@ -1,7 +1,7 @@
 import { withSupabase } from "@supabase/server"
 
-Deno.serve(
-  withSupabase(
+export default {
+  fetch: withSupabase(
     { allow: "secret" },
     async (_req, ctx) => {
       const { data, error } = await ctx.supabaseAdmin.auth.admin.listUsers({
@@ -16,5 +16,5 @@ Deno.serve(
         error: error?.message ?? null,
       })
     }
-  )
-)
+  ),
+}

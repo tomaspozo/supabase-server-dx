@@ -34,4 +34,4 @@ app.get("/me", withSupabase({ allow: "user" }), (c) => {
   })
 })
 
-Deno.serve(app.fetch)
+export default app

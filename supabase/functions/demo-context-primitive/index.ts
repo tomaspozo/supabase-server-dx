@@ -13,7 +13,7 @@ function withCors(response: Response): Response {
   return response
 }
 
-Deno.serve(async (req) => {
+export default { fetch: async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders })
   }
@@ -36,4 +36,4 @@ Deno.serve(async (req) => {
       note: "This uses createSupabaseContext directly — same result as demo-user-profile, but manual CORS and error handling.",
     })
   )
-})
+}}

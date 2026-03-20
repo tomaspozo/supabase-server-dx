@@ -61,8 +61,8 @@ function buildVerificationUrl(
   return `${base}?${params.toString()}`
 }
 
-Deno.serve(
-  withSupabase({ allow: 'secret' }, async (req, _ctx) => {
+export default {
+  fetch: withSupabase({ allow: 'secret' }, async (req, _ctx) => {
     if (req.method !== 'POST') {
       return new Response('Method not allowed', { status: 405 })
     }
@@ -208,5 +208,5 @@ Deno.serve(
     const err = await sendOne(to, subject, element)
     if (err) throw err.error
     return new Response('OK', { status: 200 })
-  })
-)
+  }),
+}

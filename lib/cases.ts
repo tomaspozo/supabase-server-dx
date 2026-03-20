@@ -21,14 +21,14 @@ export const caseDemos: CaseDemo[] = [
       "A single Deno edge function protected with withSupabase. Requires a valid JWT and returns your identity.",
     snippet: `import { withSupabase } from "@supabase/server"
 
-Deno.serve(
-  withSupabase({ allow: "user" }, async (_req, ctx) => {
+export default {
+  fetch: withSupabase({ allow: "user" }, async (_req, ctx) => {
     return Response.json({
       authType: ctx.authType,
       user: ctx.user,
     })
-  })
-)`,
+  }),
+}`,
   },
   {
     name: "case-hono-status",
@@ -48,7 +48,7 @@ app.get("/status", supabase({ allow: "always" }), (c) => {
   return c.json({ status: "ok", serverTime: new Date().toISOString() })
 })
 
-Deno.serve(app.fetch)`,
+export default app`,
   },
   {
     name: "case-hono-me",
@@ -69,7 +69,7 @@ app.get("/me", supabase({ allow: "user" }), (c) => {
   return c.json({ user })
 })
 
-Deno.serve(app.fetch)`,
+export default app`,
   },
   {
     name: "case-next",

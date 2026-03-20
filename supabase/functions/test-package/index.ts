@@ -1,7 +1,7 @@
 import { withSupabase } from "@supabase/server"
 
-Deno.serve(
-  withSupabase(
+export default {
+  fetch: withSupabase(
     {
       allow: ["secret", "always"],
     },
@@ -14,5 +14,5 @@ Deno.serve(
         hasAdmin: !!ctx.supabaseAdmin,
       })
     }
-  )
-)
+  ),
+}
