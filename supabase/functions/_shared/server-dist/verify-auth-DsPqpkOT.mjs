@@ -1,5 +1,5 @@
-let _supabase_supabase_js = require("@supabase/supabase-js");
-let jose = require("jose");
+import { createClient } from "@supabase/supabase-js";
+import { createLocalJWKSet, jwtVerify } from "jose";
 
 //#region src/errors.ts
 var EnvError = class extends Error {
@@ -47,7 +47,8 @@ function parseJwks(raw) {
 	try {
 		const parsed = JSON.parse(raw);
 		if (Array.isArray(parsed)) return { keys: parsed };
-		return parsed;
+		if (parsed?.keys && Array.isArray(parsed.keys)) return parsed;
+		return null;
 	} catch {
 		return null;
 	}
@@ -76,7 +77,7 @@ function createAdminClient(env) {
 	if (error) throw error;
 	const secretKey = resolved.secretKeys["default"];
 	if (!secretKey) throw new EnvError("No default secret key found. Set SUPABASE_SECRET_KEY or include a \"default\" entry in SUPABASE_SECRET_KEYS.", "MISSING_SECRET_KEY");
-	return (0, _supabase_supabase_js.createClient)(resolved.url, secretKey, { auth: {
+	return createClient(resolved.url, secretKey, { auth: {
 		persistSession: false,
 		autoRefreshToken: false,
 		detectSessionInUrl: false
@@ -90,7 +91,7 @@ function createContextClient(token, env) {
 	if (error) throw error;
 	const anonKey = resolved.publishableKeys["default"];
 	if (!anonKey) throw new EnvError("No default publishable key found. Set SUPABASE_PUBLISHABLE_KEY or include a \"default\" entry in SUPABASE_PUBLISHABLE_KEYS.", "MISSING_PUBLISHABLE_KEY");
-	return (0, _supabase_supabase_js.createClient)(resolved.url, anonKey, {
+	return createClient(resolved.url, anonKey, {
 		global: { headers: token ? { Authorization: `Bearer ${token}` } : {} },
 		auth: {
 			persistSession: false,
@@ -211,8 +212,8 @@ async function tryMode(mode, credentials, env) {
 			if (!credentials.token) return null;
 			if (!env.jwks) return null;
 			try {
-				const jwkSet = (0, jose.createLocalJWKSet)(env.jwks);
-				const { payload } = await (0, jose.jwtVerify)(credentials.token, jwkSet);
+				const jwkSet = createLocalJWKSet(env.jwks);
+				const { payload } = await jwtVerify(credentials.token, jwkSet);
 				if (typeof payload.sub !== "string") return null;
 				const claims = payload;
 				return {
@@ -254,51 +255,4 @@ async function verifyAuth(request, options) {
 }
 
 //#endregion
-Object.defineProperty(exports, 'AuthError', {
-  enumerable: true,
-  get: function () {
-    return AuthError;
-  }
-});
-Object.defineProperty(exports, 'EnvError', {
-  enumerable: true,
-  get: function () {
-    return EnvError;
-  }
-});
-Object.defineProperty(exports, 'createAdminClient', {
-  enumerable: true,
-  get: function () {
-    return createAdminClient;
-  }
-});
-Object.defineProperty(exports, 'createContextClient', {
-  enumerable: true,
-  get: function () {
-    return createContextClient;
-  }
-});
-Object.defineProperty(exports, 'extractCredentials', {
-  enumerable: true,
-  get: function () {
-    return extractCredentials;
-  }
-});
-Object.defineProperty(exports, 'resolveEnv', {
-  enumerable: true,
-  get: function () {
-    return resolveEnv;
-  }
-});
-Object.defineProperty(exports, 'verifyAuth', {
-  enumerable: true,
-  get: function () {
-    return verifyAuth;
-  }
-});
-Object.defineProperty(exports, 'verifyCredentials', {
-  enumerable: true,
-  get: function () {
-    return verifyCredentials;
-  }
-});
+export { createAdminClient as a, EnvError as c, createContextClient as i, verifyCredentials as n, resolveEnv as o, extractCredentials as r, AuthError as s, verifyAuth as t };

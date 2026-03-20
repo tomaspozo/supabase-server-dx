@@ -1,4 +1,4 @@
-const require_verify_auth = require('./verify-auth-BDF76rff.cjs');
+const require_verify_auth = require('./verify-auth-BQ71J8FQ.cjs');
 
 //#region src/create-supabase-context.ts
 async function createSupabaseContext(request, options) {
