@@ -8,7 +8,7 @@ export async function GET() {
   return Response.json({
     ok: true,
     authType: ctx.authType,
-    user: ctx.user,
+    userClaims: ctx.userClaims,
     claims: ctx.claims,
     hasSupabase: !!ctx.supabase,
     hasAdmin: !!ctx.supabaseAdmin,

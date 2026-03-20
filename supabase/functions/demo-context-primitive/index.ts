@@ -32,7 +32,7 @@ export default { fetch: async (req: Request) => {
     Response.json({
       demo: "demo-context-primitive",
       authType: ctx.authType,
-      user: ctx.user,
+      userClaims: ctx.userClaims,
       note: "This uses createSupabaseContext directly — same result as demo-user-profile, but manual CORS and error handling.",
     })
   )

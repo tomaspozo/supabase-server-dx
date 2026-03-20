@@ -9,7 +9,7 @@ export default {
       return Response.json({
         ok: true,
         authType: ctx.authType,
-        hasUser: !!ctx.user,
+        hasUser: !!ctx.userClaims,
         hasSupabase: !!ctx.supabase,
         hasAdmin: !!ctx.supabaseAdmin,
       })

@@ -41,9 +41,9 @@ async function UserProfile() {
   }
 
   const fields = [
-    { label: "Email", value: ctx.user?.email },
-    { label: "User ID", value: ctx.user?.id },
-    { label: "Role", value: ctx.user?.role },
+    { label: "Email", value: ctx.userClaims?.email },
+    { label: "User ID", value: ctx.userClaims?.id },
+    { label: "Role", value: ctx.userClaims?.role },
     {
       label: "Provider",
       value:

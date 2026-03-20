@@ -10,6 +10,6 @@ export async function GET() {
     authType: ctx.authType,
     hasSupabase: !!ctx.supabase,
     hasAdmin: !!ctx.supabaseAdmin,
-    user: ctx.user,
+    userClaims: ctx.userClaims,
   })
 }

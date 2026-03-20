@@ -25,12 +25,12 @@ app.get("/status", withSupabase({ allow: "always" }), (c) => {
 
 // Authenticated route — valid JWT required
 app.get("/me", withSupabase({ allow: "user" }), (c) => {
-  const { user, authType } = c.var.supabaseContext
+  const { userClaims, authType } = c.var.supabaseContext
   return c.json({
     demo: "case-hono",
     route: "/me",
     authType,
-    user,
+    userClaims,
   })
 })
 

@@ -14,6 +14,7 @@ export default {
       demo: "demo-user-profile",
       authType: ctx.authType,
       user: user,
+      userClaims: ctx.userClaims,
     });
   }),
 };

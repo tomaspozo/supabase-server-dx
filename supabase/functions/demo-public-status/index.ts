@@ -9,7 +9,7 @@ export default {
         authType: ctx.authType,
         serverTime: new Date().toISOString(),
         runtime: `Deno ${Deno.version.deno}`,
-        user: ctx.user,
+        userClaims: ctx.userClaims,
       })
     }
   ),

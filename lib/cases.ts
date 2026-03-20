@@ -25,7 +25,7 @@ export default {
   fetch: withSupabase({ allow: "user" }, async (_req, ctx) => {
     return Response.json({
       authType: ctx.authType,
-      user: ctx.user,
+      user: ctx.userClaims,
     })
   }),
 }`,
@@ -89,7 +89,7 @@ export async function GET() {
   return Response.json({
     ok: true,
     authType: ctx.authType,
-    user: ctx.user,
+    user: ctx.userClaims,
     claims: ctx.claims,
   })
 }`,

@@ -5,7 +5,7 @@ export default {
     return Response.json({
       demo: "case-ef",
       authType: ctx.authType,
-      user: ctx.user,
+      userClaims: ctx.userClaims,
     });
   }),
 };

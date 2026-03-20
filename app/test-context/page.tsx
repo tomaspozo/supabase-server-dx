@@ -15,7 +15,7 @@ async function ContextResult() {
   return (
     <pre>
       {JSON.stringify(
-        { authType: ctx.authType, user: ctx.user, claims: ctx.claims },
+        { authType: ctx.authType, userClaims: ctx.userClaims, claims: ctx.claims },
         null,
         2,
       )}

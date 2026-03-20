@@ -31,7 +31,7 @@ export default {
   fetch: withSupabase({ allow: "user" }, async (_req, ctx) => {
     return Response.json({
       authType: ctx.authType,
-      user: ctx.user,
+      user: ctx.userClaims,
     })
   }),
 }`,
@@ -87,8 +87,8 @@ export default {
 
 export default {
   fetch: withSupabase({ allow: ["user", "always"] }, async (_req, ctx) => {
-    const greeting = ctx.user
-      ? \`Hello, \${ctx.user.email ?? ctx.user.id}!\`
+    const greeting = ctx.userClaims
+      ? \`Hello, \${ctx.userClaims.email ?? ctx.userClaims.id}!\`
       : "Hello, anonymous visitor!"
     return Response.json({ authType: ctx.authType, greeting })
   }),
@@ -130,7 +130,7 @@ export default { fetch: async (req: Request) => {
     )
 
   return withCors(
-    Response.json({ authType: ctx.authType, user: ctx.user })
+    Response.json({ authType: ctx.authType, user: ctx.userClaims })
   )
 }}`,
   },
@@ -203,7 +203,7 @@ export async function GET() {
     authType: ctx.authType,
     hasSupabase: !!ctx.supabase,
     hasAdmin: !!ctx.supabaseAdmin,
-    user: ctx.user,
+    user: ctx.userClaims,
   })
 }`,
   },
@@ -225,7 +225,7 @@ export async function GET() {
   return Response.json({
     ok: true,
     authType: ctx.authType,
-    user: ctx.user,
+    user: ctx.userClaims,
     claims: ctx.claims,
     hasSupabase: !!ctx.supabase,
     hasAdmin: !!ctx.supabaseAdmin,
@@ -250,7 +250,7 @@ async function ContextResult() {
   return (
     <pre>
       {JSON.stringify(
-        { authType: ctx.authType, user: ctx.user, claims: ctx.claims },
+        { authType: ctx.authType, user: ctx.userClaims, claims: ctx.claims },
         null, 2
       )}
     </pre>

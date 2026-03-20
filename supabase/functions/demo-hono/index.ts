@@ -20,15 +20,15 @@ app.get("/status", withSupabase({ allow: "always" }), (c) => {
 
 // Authenticated routes — valid JWT required
 app.get("/me", withSupabase({ allow: "user" }), (c) => {
-  const { user } = c.var.supabaseContext
-  return c.json({ user })
+  const { userClaims } = c.var.supabaseContext
+  return c.json({ userClaims })
 })
 
 app.get("/protected-data", withSupabase({ allow: "user" }), (c) => {
-  const { user, supabase: sb } = c.var.supabaseContext
+  const { userClaims, supabase: sb } = c.var.supabaseContext
   return c.json({
-    message: `Hello ${user?.email}`,
-    userId: user?.id,
+    message: `Hello ${userClaims?.email}`,
+    userId: userClaims?.id,
     hasClient: !!sb,
   })
 })
