@@ -6,7 +6,7 @@
 --   Tables and internal functions stay in the public schema and are never
 --   exposed directly. Grants USAGE and EXECUTE to authenticated and service_role.
 -- @example SELECT api.todos_list();
--- @related _admin_get_secret, _admin_call_edge_function
+-- @related _internal_admin_get_secret, _internal_admin_call_edge_function
 CREATE SCHEMA IF NOT EXISTS api;
 GRANT USAGE ON SCHEMA api TO authenticated, service_role;
 GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA api TO authenticated, service_role;

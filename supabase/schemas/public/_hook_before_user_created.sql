@@ -7,7 +7,7 @@
 -- @signature _hook_before_user_created(event jsonb)
 -- @returns jsonb
 -- @security SECURITY DEFINER — granted to supabase_auth_admin
--- @related _admin_get_secret, auth.hook.before_user_created
+-- @related _internal_admin_get_secret, auth.hook.before_user_created
 
 CREATE OR REPLACE FUNCTION public._hook_before_user_created(event jsonb)
 RETURNS jsonb
@@ -22,7 +22,7 @@ DECLARE
   domain text;
   domains text[];
 BEGIN
-  allowed_domains := public._admin_get_secret('ALLOWED_SIGNUP_DOMAINS');
+  allowed_domains := public._internal_admin_get_secret('ALLOWED_SIGNUP_DOMAINS');
 
   -- No restriction configured → allow all signups
   IF allowed_domains IS NULL OR trim(allowed_domains) = '' THEN

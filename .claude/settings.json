@@ -1,5 +1,13 @@
 {
   "enabledPlugins": {
     "link@agentlink": true
+  },
+  "extraKnownMarketplaces": {
+    "agentlink": {
+      "source": {
+        "source": "github",
+        "repo": "agentlinksh/agent"
+      }
+    }
   }
 }

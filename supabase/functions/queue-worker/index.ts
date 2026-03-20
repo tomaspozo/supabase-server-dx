@@ -4,17 +4,16 @@
 // @description Reads pending messages from the queue, invokes the target edge
 //   function for each task, and archives successful messages. Failed tasks
 //   remain in the queue and become visible again after the visibility timeout
-//   expires, enabling automatic retry. Secured with allow: "secret" so only
+//   expires, enabling automatic retry. Secured with allow: "private" so only
 //   service_role can invoke it.
-// @example SELECT _admin_enqueue_task('send-email', '{"to":"user@example.com"}'::jsonb);
+// @example SELECT api._admin_enqueue_task('send-email', '{"to":"user@example.com"}'::jsonb);
 // @related agentlink_tasks, _admin_enqueue_task, _admin_queue_read, _admin_queue_archive
 
-// @ts-nocheck
-import { withSupabase } from "@supabase/server";
+import { withSupabase } from "@supabase/server"
 
 export default {
-  fetch: withSupabase({ allow: "secret" }, async (_req, ctx) => {
-    const { data: messages, error: readError } = await ctx.supabaseAdmin.rpc(
+  fetch: withSupabase({ allow: "secret" }, async (_req, { supabaseAdmin }) => {
+    const { data: messages, error: readError } = await supabaseAdmin.rpc(
       "_admin_queue_read",
       { qty: 5, vt: 30 },
     );
@@ -34,7 +33,7 @@ export default {
       const { function_name, payload } = msg.message;
 
       try {
-        const { error: invokeError } = await ctx.supabaseAdmin.functions.invoke(
+        const { error: invokeError } = await supabaseAdmin.functions.invoke(
           function_name,
           { body: payload },
         );
@@ -49,7 +48,7 @@ export default {
         }
 
         // Archive on success (keeps history)
-        await ctx.supabaseAdmin.rpc("_admin_queue_archive", { id: msg.msg_id });
+        await supabaseAdmin.rpc("_admin_queue_archive", { id: msg.msg_id });
         processed++;
       } catch (err) {
         console.error(
@@ -62,4 +61,4 @@ export default {
 
     return Response.json({ processed, total: messages.length });
   }),
-};
+}

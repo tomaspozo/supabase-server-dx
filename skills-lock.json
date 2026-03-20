@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "agent-email-inbox": {
+      "source": "resend/resend-skills",
+      "sourceType": "github",
+      "computedHash": "77c68e08a3c42760cfa9757debcc5be35fec7db908a82dfc62638afb8695a5f2"
+    },
     "email-best-practices": {
       "source": "resend/email-best-practices",
       "sourceType": "github",
@@ -19,7 +24,22 @@
     "resend": {
       "source": "resend/resend-skills",
       "sourceType": "github",
-      "computedHash": "1c7a372d1886c34f16ab32ea2feff7133daa8d5db2589064a9b92fbbee6a2208"
+      "computedHash": "e756972f463d161f3c227eab41d119fd7430249736bc770d00b21c3eeb68f91a"
+    },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "computedHash": "507f011a70e8b3ae242bdc0bb5b39fd91a1d4049a0f3c281991ccf84973d591c"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "computedHash": "9c87c315aed143ee3b34bec8117100f5035e0df09e6b23e1ecc772cff434c9ad"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "c858d2d9023e73edb4e5504868cb0e36313e58fd56af12ef888b43c5634a3c17"
     }
   }
 }

@@ -7,7 +7,7 @@
 -- @signature _hook_send_email(event jsonb)
 -- @returns jsonb
 -- @security SECURITY DEFINER — granted to supabase_auth_admin
--- @related _admin_enqueue_task, send-email, queue-worker, auth.hook.send_email
+-- @related api._admin_enqueue_task, send-email, queue-worker, auth.hook.send_email
 
 CREATE OR REPLACE FUNCTION public._hook_send_email(event jsonb)
 RETURNS jsonb
@@ -16,7 +16,7 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
-  PERFORM public._admin_enqueue_task(
+  PERFORM api._admin_enqueue_task(
     'send-email',
     event
   );

@@ -5,7 +5,7 @@
 --   Used by _admin_call_edge_function to invoke Supabase Edge Functions
 --   without waiting for a response (fire-and-forget via net.http_post).
 -- @example SELECT net.http_post('https://example.com/api', '{"key":"value"}'::jsonb);
--- @related _admin_call_edge_function, _admin_enqueue_task
+-- @related _internal_admin_call_edge_function, _admin_enqueue_task
 CREATE EXTENSION IF NOT EXISTS pg_net WITH SCHEMA extensions;
 
 -- @agentlink pg_cron
