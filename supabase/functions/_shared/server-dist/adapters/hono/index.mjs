@@ -1,4 +1,4 @@
-import { t as createSupabaseContext } from "../../create-supabase-context-aKSIMCC8.mjs";
+import { t as createSupabaseContext } from "../../create-supabase-context-B7_x8BWT.mjs";
 import { HTTPException } from "hono/http-exception";
 import { createMiddleware } from "hono/factory";
 

@@ -1,4 +1,4 @@
-import { l as WithSupabaseConfig, o as SupabaseContext } from "../../types-DrWYe7AC.mjs";
+import { l as WithSupabaseConfig, o as SupabaseContext } from "../../types-CRP1ATQs.mjs";
 import * as hono_types0 from "hono/types";
 
 //#region src/adapters/hono/middleware.d.ts

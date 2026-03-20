@@ -19,7 +19,7 @@ interface Credentials {
 interface AuthResult {
   authType: Allow;
   token: string | null;
-  user: UserIdentity | null;
+  userClaims: UserClaims | null;
   claims: JWTClaims | null;
 }
 interface JWTClaims {
@@ -34,7 +34,7 @@ interface JWTClaims {
   user_metadata?: Record<string, unknown>;
   [key: string]: unknown;
 }
-interface UserIdentity {
+interface UserClaims {
   id: string;
   role?: string;
   email?: string;
@@ -49,9 +49,10 @@ interface WithSupabaseConfig {
 interface SupabaseContext {
   supabase: SupabaseClient;
   supabaseAdmin: SupabaseClient;
-  user: UserIdentity | null;
+  /** JWT-derived identity. For the full Supabase User object, call `supabase.auth.getUser()`. */
+  userClaims: UserClaims | null;
   claims: JWTClaims | null;
   authType: Allow;
 }
 //#endregion
-export { JWTClaims as a, UserIdentity as c, Credentials as i, WithSupabaseConfig as l, AllowWithKey as n, SupabaseContext as o, AuthResult as r, SupabaseEnv as s, Allow as t };
+export { JWTClaims as a, UserClaims as c, Credentials as i, WithSupabaseConfig as l, AllowWithKey as n, SupabaseContext as o, AuthResult as r, SupabaseEnv as s, Allow as t };

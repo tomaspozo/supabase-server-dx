@@ -1,5 +1,5 @@
-import { a as createAdminClient, c as EnvError, i as createContextClient, n as verifyCredentials, o as resolveEnv, r as extractCredentials, s as AuthError, t as verifyAuth } from "./verify-auth-BDS21aFN.mjs";
-import { t as createSupabaseContext } from "./create-supabase-context-aKSIMCC8.mjs";
+import { a as createAdminClient, c as EnvError, i as createContextClient, n as verifyCredentials, o as resolveEnv, r as extractCredentials, s as AuthError, t as verifyAuth } from "./verify-auth-BQyc2NLC.mjs";
+import { t as createSupabaseContext } from "./create-supabase-context-B7_x8BWT.mjs";
 import { corsHeaders } from "@supabase/supabase-js/cors";
 
 //#region src/cors.ts

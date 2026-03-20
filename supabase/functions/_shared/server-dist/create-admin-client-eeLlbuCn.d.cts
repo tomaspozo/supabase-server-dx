@@ -1,4 +1,4 @@
-import { i as Credentials, n as AllowWithKey, r as AuthResult, s as SupabaseEnv } from "./types-B2v2XDGq.cjs";
+import { i as Credentials, n as AllowWithKey, r as AuthResult, s as SupabaseEnv } from "./types-6aN-HUPs.cjs";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 //#region src/errors.d.ts
