@@ -1,20 +1,12 @@
-import { a as createAdminClient, c as EnvError, i as createContextClient, n as verifyCredentials, o as resolveEnv, r as extractCredentials, s as AuthError, t as verifyAuth } from "./verify-auth-DiJdb3qB.mjs";
-import { t as createSupabaseContext } from "./create-supabase-context-DY3z_Umx.mjs";
+import { a as createAdminClient, c as EnvError, i as createContextClient, n as verifyCredentials, o as resolveEnv, r as extractCredentials, s as AuthError, t as verifyAuth } from "./verify-auth-BDS21aFN.mjs";
+import { t as createSupabaseContext } from "./create-supabase-context-aKSIMCC8.mjs";
+import { corsHeaders } from "@supabase/supabase-js/cors";
 
 //#region src/cors.ts
 function buildCorsHeaders(config) {
 	if (config === false) return {};
-	const opts = typeof config === "object" ? config : {};
-	const origins = opts.origins ?? "*";
-	const origin = Array.isArray(origins) ? origins.join(", ") : origins;
-	const headers = {
-		"Access-Control-Allow-Origin": origin,
-		"Access-Control-Allow-Methods": opts.methods?.join(", ") ?? "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-		"Access-Control-Allow-Headers": opts.headers?.join(", ") ?? "Authorization, apikey, Content-Type, x-client-info"
-	};
-	if (opts.maxAge != null) headers["Access-Control-Max-Age"] = String(opts.maxAge);
-	if (opts.credentials) headers["Access-Control-Allow-Credentials"] = "true";
-	return headers;
+	if (typeof config === "object") return config;
+	return corsHeaders;
 }
 function addCorsHeaders(response, config) {
 	if (config === false) return response;
@@ -47,4 +39,4 @@ function withSupabase(config, handler) {
 }
 
 //#endregion
-export { AuthError, EnvError, addCorsHeaders, buildCorsHeaders, createAdminClient, createContextClient, createSupabaseContext, extractCredentials, resolveEnv, verifyAuth, verifyCredentials, withSupabase };
+export { AuthError, EnvError, createAdminClient, createContextClient, createSupabaseContext, extractCredentials, resolveEnv, verifyAuth, verifyCredentials, withSupabase };

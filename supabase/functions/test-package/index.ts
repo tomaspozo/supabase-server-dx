@@ -5,8 +5,8 @@ Deno.serve(
     {
       allow: ["secret", "always"],
       env: {
-        publishableKeys: [{ name: "default", key: Deno.env.get("SB_PUBLISHABLE_KEY")! }],
-        secretKeys: [{ name: "default", key: Deno.env.get("SB_SECRET_KEY")! }],
+        publishableKeys: { "default": Deno.env.get("SB_PUBLISHABLE_KEY")! },
+        secretKeys: { "default": Deno.env.get("SB_SECRET_KEY")! },
       },
     },
     async (_req, ctx) => {

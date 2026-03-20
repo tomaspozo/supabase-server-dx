@@ -1,21 +1,13 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_verify_auth = require('./verify-auth-Cs7kMug3.cjs');
-const require_create_supabase_context = require('./create-supabase-context-aadlBH3s.cjs');
+const require_verify_auth = require('./verify-auth-ClYQoerJ.cjs');
+const require_create_supabase_context = require('./create-supabase-context-Bd_QyUeY.cjs');
+let _supabase_supabase_js_cors = require("@supabase/supabase-js/cors");
 
 //#region src/cors.ts
 function buildCorsHeaders(config) {
 	if (config === false) return {};
-	const opts = typeof config === "object" ? config : {};
-	const origins = opts.origins ?? "*";
-	const origin = Array.isArray(origins) ? origins.join(", ") : origins;
-	const headers = {
-		"Access-Control-Allow-Origin": origin,
-		"Access-Control-Allow-Methods": opts.methods?.join(", ") ?? "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-		"Access-Control-Allow-Headers": opts.headers?.join(", ") ?? "Authorization, apikey, Content-Type, x-client-info"
-	};
-	if (opts.maxAge != null) headers["Access-Control-Max-Age"] = String(opts.maxAge);
-	if (opts.credentials) headers["Access-Control-Allow-Credentials"] = "true";
-	return headers;
+	if (typeof config === "object") return config;
+	return _supabase_supabase_js_cors.corsHeaders;
 }
 function addCorsHeaders(response, config) {
 	if (config === false) return response;
@@ -50,8 +42,6 @@ function withSupabase(config, handler) {
 //#endregion
 exports.AuthError = require_verify_auth.AuthError;
 exports.EnvError = require_verify_auth.EnvError;
-exports.addCorsHeaders = addCorsHeaders;
-exports.buildCorsHeaders = buildCorsHeaders;
 exports.createAdminClient = require_verify_auth.createAdminClient;
 exports.createContextClient = require_verify_auth.createContextClient;
 exports.createSupabaseContext = require_create_supabase_context.createSupabaseContext;

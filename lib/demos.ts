@@ -26,9 +26,10 @@ export const edgeFunctionDemos: Demo[] = [
     description:
       "Requires a valid JWT. Returns your identity from the Supabase context. Uses withSupabase.",
     snippet: `import { withSupabase } from "@supabase/server"
+import { env } from "../_shared/env.ts"
 
 Deno.serve(
-  withSupabase({ allow: "user" }, async (_req, ctx) => {
+  withSupabase({ allow: "user", env }, async (_req, ctx) => {
     return Response.json({
       authType: ctx.authType,
       user: ctx.user,
@@ -43,9 +44,10 @@ Deno.serve(
     description:
       "Fully public, no auth needed. Returns server time and Deno runtime info. Uses withSupabase.",
     snippet: `import { withSupabase } from "@supabase/server"
+import { env } from "../_shared/env.ts"
 
 Deno.serve(
-  withSupabase({ allow: "always" }, async (_req, ctx) => {
+  withSupabase({ allow: "always", env }, async (_req, ctx) => {
     return Response.json({
       authType: ctx.authType,
       serverTime: new Date().toISOString(),
@@ -62,9 +64,10 @@ Deno.serve(
       "Requires the secret API key. Lists users via admin client. Invoked through a server-side proxy.",
     useProxy: true,
     snippet: `import { withSupabase } from "@supabase/server"
+import { env } from "../_shared/env.ts"
 
 Deno.serve(
-  withSupabase({ allow: "secret" }, async (_req, ctx) => {
+  withSupabase({ allow: "secret", env }, async (_req, ctx) => {
     const { data } = await ctx.supabaseAdmin
       .auth.admin.listUsers({ perPage: 1, page: 1 })
     return Response.json({
@@ -84,9 +87,10 @@ Deno.serve(
     description:
       'Accepts both authenticated and anonymous requests. Returns a personalized or generic greeting. Uses withSupabase.',
     snippet: `import { withSupabase } from "@supabase/server"
+import { env } from "../_shared/env.ts"
 
 Deno.serve(
-  withSupabase({ allow: ["user", "always"] }, async (_req, ctx) => {
+  withSupabase({ allow: ["user", "always"], env }, async (_req, ctx) => {
     const greeting = ctx.user
       ? \`Hello, \${ctx.user.email ?? ctx.user.id}!\`
       : "Hello, anonymous visitor!"
@@ -100,26 +104,37 @@ Deno.serve(
     authMode: "user",
     description:
       "Same as User Profile but uses createSupabaseContext directly with manual CORS and error handling.",
-    snippet: `import {
-  createSupabaseContext,
-  buildCorsHeaders,
-  addCorsHeaders,
-} from "@supabase/server"
+    snippet: `import { createSupabaseContext } from "@supabase/server"
+import { env } from "../_shared/env.ts"
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+}
+
+function withCors(response: Response): Response {
+  for (const [key, value] of Object.entries(corsHeaders)) {
+    response.headers.set(key, value)
+  }
+  return response
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS")
-    return new Response(null, { status: 204, headers: buildCorsHeaders() })
+    return new Response(null, { status: 204, headers: corsHeaders })
 
   const { data: ctx, error } = await createSupabaseContext(req, {
-    allow: "user",
+    allow: "user", env,
   })
 
   if (error)
-    return addCorsHeaders(
+    return withCors(
       Response.json({ error: error.message }, { status: error.status })
     )
 
-  return addCorsHeaders(
+  return withCors(
     Response.json({ authType: ctx.authType, user: ctx.user })
   )
 })`,
@@ -136,13 +151,14 @@ export const honoDemos: Demo[] = [
       "Public route using the Hono adapter. No credentials required — returns a simple status check.",
     snippet: `import { Hono } from "hono"
 import { cors } from "hono/cors"
-import { supabase } from "@supabase/server/adapters/hono"
+import { withSupabase } from "@supabase/server/adapters/hono"
+import { env } from "../_shared/env.ts"
 
 const app = new Hono().basePath("/demo-hono")
 app.use(cors())
 
 // Per-route middleware — no credentials required
-app.get("/status", supabase({ allow: "always" }), (c) => {
+app.get("/status", withSupabase({ allow: "always", env }), (c) => {
   return c.json({ status: "ok", demo: "demo-hono" })
 })
 
@@ -154,17 +170,18 @@ Deno.serve(app.fetch)`,
     title: "Hono User Route",
     authMode: "user",
     description:
-      "Authenticated route using the Hono adapter. Requires a valid JWT and returns user info from c.var.supabase.",
+      "Authenticated route using the Hono adapter. Requires a valid JWT and returns user info from c.var.supabaseContext.",
     snippet: `import { Hono } from "hono"
 import { cors } from "hono/cors"
-import { supabase } from "@supabase/server/adapters/hono"
+import { withSupabase } from "@supabase/server/adapters/hono"
+import { env } from "../_shared/env.ts"
 
 const app = new Hono().basePath("/demo-hono")
 app.use(cors())
 
 // Per-route middleware — valid JWT required
-app.get("/me", supabase({ allow: "user" }), (c) => {
-  const { user } = c.var.supabase
+app.get("/me", withSupabase({ allow: "user", env }), (c) => {
+  const { user } = c.var.supabaseContext
   return c.json({ user })
 })
 

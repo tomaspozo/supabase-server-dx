@@ -1,9 +1,9 @@
-import { t as createSupabaseContext } from "../../create-supabase-context-DY3z_Umx.mjs";
+import { t as createSupabaseContext } from "../../create-supabase-context-aKSIMCC8.mjs";
 import { HTTPException } from "hono/http-exception";
 import { createMiddleware } from "hono/factory";
 
 //#region src/adapters/hono/middleware.ts
-function supabase(config) {
+function withSupabase(config) {
 	return createMiddleware(async (c, next) => {
 		if (c.var.supabaseContext) {
 			await next();
@@ -20,4 +20,4 @@ function supabase(config) {
 }
 
 //#endregion
-export { supabase };
+export { withSupabase };

@@ -3,14 +3,10 @@ import { SupabaseClient } from "@supabase/supabase-js";
 //#region src/types.d.ts
 type Allow = 'always' | 'public' | 'secret' | 'user';
 type AllowWithKey = Allow | `public:${string}` | `secret:${string}`;
-interface NamedKey {
-  name: string;
-  key: string;
-}
 interface SupabaseEnv {
   url: string;
-  publishableKeys: NamedKey[];
-  secretKeys: NamedKey[];
+  publishableKeys: Record<string, string>;
+  secretKeys: Record<string, string>;
   jwks: JsonWebKeySet | null;
 }
 interface JsonWebKeySet {
@@ -45,17 +41,10 @@ interface UserIdentity {
   appMetadata?: Record<string, unknown>;
   userMetadata?: Record<string, unknown>;
 }
-interface CorsConfig {
-  origins?: string | string[];
-  methods?: string[];
-  headers?: string[];
-  maxAge?: number;
-  credentials?: boolean;
-}
 interface WithSupabaseConfig {
   allow?: AllowWithKey | AllowWithKey[];
   env?: Partial<SupabaseEnv>;
-  cors?: boolean | CorsConfig;
+  cors?: boolean | Record<string, string>;
 }
 interface SupabaseContext {
   supabase: SupabaseClient;
@@ -65,4 +54,4 @@ interface SupabaseContext {
   authType: Allow;
 }
 //#endregion
-export { Credentials as a, SupabaseContext as c, WithSupabaseConfig as d, CorsConfig as i, SupabaseEnv as l, AllowWithKey as n, JWTClaims as o, AuthResult as r, NamedKey as s, Allow as t, UserIdentity as u };
+export { JWTClaims as a, UserIdentity as c, Credentials as i, WithSupabaseConfig as l, AllowWithKey as n, SupabaseContext as o, AuthResult as r, SupabaseEnv as s, Allow as t };

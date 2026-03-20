@@ -1,9 +1,22 @@
-import { createSupabaseContext, buildCorsHeaders, addCorsHeaders } from "@supabase/server"
+import { createSupabaseContext } from "@supabase/server"
 import { env } from "../_shared/env.ts"
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+}
+
+function withCors(response: Response): Response {
+  for (const [key, value] of Object.entries(corsHeaders)) {
+    response.headers.set(key, value)
+  }
+  return response
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: buildCorsHeaders() })
+    return new Response(null, { status: 204, headers: corsHeaders })
   }
 
   const { data: ctx, error } = await createSupabaseContext(req, {
@@ -12,12 +25,12 @@ Deno.serve(async (req) => {
   })
 
   if (error) {
-    return addCorsHeaders(
+    return withCors(
       Response.json({ error: error.message, code: error.code }, { status: error.status })
     )
   }
 
-  return addCorsHeaders(
+  return withCors(
     Response.json({
       demo: "demo-context-primitive",
       authType: ctx.authType,

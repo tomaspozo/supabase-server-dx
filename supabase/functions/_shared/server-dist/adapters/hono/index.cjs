@@ -1,10 +1,10 @@
 Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-const require_create_supabase_context = require('../../create-supabase-context-aadlBH3s.cjs');
+const require_create_supabase_context = require('../../create-supabase-context-Bd_QyUeY.cjs');
 let hono_http_exception = require("hono/http-exception");
 let hono_factory = require("hono/factory");
 
 //#region src/adapters/hono/middleware.ts
-function supabase(config) {
+function withSupabase(config) {
 	return (0, hono_factory.createMiddleware)(async (c, next) => {
 		if (c.var.supabaseContext) {
 			await next();
@@ -21,4 +21,4 @@ function supabase(config) {
 }
 
 //#endregion
-exports.supabase = supabase;
+exports.withSupabase = withSupabase;

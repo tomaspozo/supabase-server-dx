@@ -1,23 +1,31 @@
 import { Hono } from "hono"
 import { cors } from "hono/cors"
-import { supabase } from "@supabase/server/adapters/hono"
+import { HTTPException } from "hono/http-exception"
+import { withSupabase } from "@supabase/server/adapters/hono"
 import { env } from "../_shared/env.ts"
 
 const app = new Hono().basePath("/demo-hono")
 app.use(cors())
 
+app.onError((err, c) => {
+  if (err instanceof HTTPException) {
+    return c.json({ error: err.message }, err.status)
+  }
+  return c.json({ error: "Internal server error" }, 500)
+})
+
 // Public route — no credentials required
-app.get("/status", supabase({ allow: "always", env }), (c) => {
+app.get("/status", withSupabase({ allow: "always", env }), (c) => {
   return c.json({ status: "ok", demo: "demo-hono" })
 })
 
 // Authenticated routes — valid JWT required
-app.get("/me", supabase({ allow: "user", env }), (c) => {
+app.get("/me", withSupabase({ allow: "user", env }), (c) => {
   const { user } = c.var.supabaseContext
   return c.json({ user })
 })
 
-app.get("/protected-data", supabase({ allow: "user", env }), (c) => {
+app.get("/protected-data", withSupabase({ allow: "user", env }), (c) => {
   const { user, supabase: sb } = c.var.supabaseContext
   return c.json({
     message: `Hello ${user?.email}`,

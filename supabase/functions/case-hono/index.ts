@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { HTTPException } from "hono/http-exception"
-import { supabase } from "@supabase/server/adapters/hono"
+import { withSupabase } from "@supabase/server/adapters/hono"
 import { env } from "../_shared/env.ts"
 
 const app = new Hono().basePath("/case-hono")
@@ -15,7 +15,7 @@ app.onError((err, c) => {
 })
 
 // Public route — no credentials required
-app.get("/status", supabase({ allow: "always", env }), (c) => {
+app.get("/status", withSupabase({ allow: "always", env }), (c) => {
   return c.json({
     demo: "case-hono",
     route: "/status",
@@ -25,7 +25,7 @@ app.get("/status", supabase({ allow: "always", env }), (c) => {
 })
 
 // Authenticated route — valid JWT required
-app.get("/me", supabase({ allow: "user", env }), (c) => {
+app.get("/me", withSupabase({ allow: "user", env }), (c) => {
   const { user, authType } = c.var.supabaseContext
   return c.json({
     demo: "case-hono",

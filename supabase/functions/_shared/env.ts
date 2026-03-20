@@ -4,7 +4,7 @@ function parseJwks(raw: string | undefined) {
 }
 
 export const env = {
-  publishableKeys: [{ name: "default", key: Deno.env.get("SB_PUBLISHABLE_KEY")! }],
-  secretKeys: [{ name: "default", key: Deno.env.get("SB_SECRET_KEY")! }],
+  publishableKeys: { "default": Deno.env.get("SB_PUBLISHABLE_KEY")! },
+  secretKeys: { "default": Deno.env.get("SB_SECRET_KEY")! },
   jwks: parseJwks(Deno.env.get("SB_JWKS")),
 }

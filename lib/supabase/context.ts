@@ -103,10 +103,8 @@ function resolveNextEnv(): Partial<SupabaseEnv> {
 
   return {
     url: url ?? undefined,
-    publishableKeys: publishableKey
-      ? [{ name: "default", key: publishableKey }]
-      : [],
-    secretKeys: secretKey ? [{ name: "default", key: secretKey }] : [],
+    publishableKeys: publishableKey ? { "default": publishableKey } : {},
+    secretKeys: secretKey ? { "default": secretKey } : {},
     // JWKS is fetched at startup and cached — see fetchJwks()
   };
 }

@@ -1,5 +1,5 @@
-let _supabase_supabase_js = require("@supabase/supabase-js");
-let jose = require("jose");
+import { createClient } from "@supabase/supabase-js";
+import { createLocalJWKSet, jwtVerify } from "jose";
 
 //#region src/errors.ts
 var EnvError = class extends Error {
@@ -25,17 +25,22 @@ function getEnvVar(name) {
 	if (typeof Deno !== "undefined" && Deno.env?.get) return Deno.env.get(name);
 	if (typeof process !== "undefined" && process.env) return process.env[name];
 }
-function parseNamedKeys(raw) {
-	if (!raw) return [];
+function parseKeys(raw) {
+	if (!raw) return {};
 	try {
 		const parsed = JSON.parse(raw);
-		return Object.entries(parsed).map(([name, key]) => ({
-			name,
-			key
-		}));
+		if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) return {};
+		return parsed;
 	} catch {
-		return [];
+		return {};
 	}
+}
+function resolveKeys(singularVar, pluralVar) {
+	const plural = getEnvVar(pluralVar);
+	if (plural) return parseKeys(plural);
+	const singular = getEnvVar(singularVar);
+	if (singular) return { default: singular };
+	return {};
 }
 function parseJwks(raw) {
 	if (!raw) return null;
@@ -54,8 +59,8 @@ function resolveEnv(overrides) {
 	return {
 		data: {
 			url,
-			publishableKeys: overrides?.publishableKeys ?? parseNamedKeys(getEnvVar("SUPABASE_PUBLISHABLE_KEYS")),
-			secretKeys: overrides?.secretKeys ?? parseNamedKeys(getEnvVar("SUPABASE_SECRET_KEYS")),
+			publishableKeys: overrides?.publishableKeys ?? resolveKeys("SUPABASE_PUBLISHABLE_KEY", "SUPABASE_PUBLISHABLE_KEYS"),
+			secretKeys: overrides?.secretKeys ?? resolveKeys("SUPABASE_SECRET_KEY", "SUPABASE_SECRET_KEYS"),
 			jwks: overrides?.jwks ?? parseJwks(getEnvVar("SUPABASE_JWKS"))
 		},
 		error: null
@@ -67,8 +72,8 @@ function resolveEnv(overrides) {
 function createAdminClient(env) {
 	const { data: resolved, error } = resolveEnv(env);
 	if (error) throw error;
-	const secretKey = resolved.secretKeys[0]?.key ?? "";
-	return (0, _supabase_supabase_js.createClient)(resolved.url, secretKey, { auth: {
+	const secretKey = resolved.secretKeys["default"] ?? "";
+	return createClient(resolved.url, secretKey, { auth: {
 		persistSession: false,
 		autoRefreshToken: false,
 		detectSessionInUrl: false
@@ -80,8 +85,8 @@ function createAdminClient(env) {
 function createContextClient(token, env) {
 	const { data: resolved, error } = resolveEnv(env);
 	if (error) throw error;
-	const anonKey = resolved.publishableKeys[0]?.key ?? "";
-	return (0, _supabase_supabase_js.createClient)(resolved.url, anonKey, {
+	const anonKey = resolved.publishableKeys["default"] ?? "";
+	return createClient(resolved.url, anonKey, {
 		global: { headers: token ? { Authorization: `Bearer ${token}` } : {} },
 		auth: {
 			persistSession: false,
@@ -152,32 +157,52 @@ async function tryMode(mode, credentials, env) {
 		};
 		case "public": {
 			if (!credentials.apikey) return null;
-			const keys = keyName ? env.publishableKeys.filter((k) => k.name === keyName) : env.publishableKeys;
-			for (const k of keys) if (await timingSafeEqual(credentials.apikey, k.key)) return {
-				authType: "public",
-				token: null,
-				user: null,
-				claims: null
-			};
+			const keys = env.publishableKeys;
+			if (keyName === "*") {
+				for (const value of Object.values(keys)) if (await timingSafeEqual(credentials.apikey, value)) return {
+					authType: "public",
+					token: null,
+					user: null,
+					claims: null
+				};
+			} else {
+				const value = keys[keyName ?? "default"];
+				if (value && await timingSafeEqual(credentials.apikey, value)) return {
+					authType: "public",
+					token: null,
+					user: null,
+					claims: null
+				};
+			}
 			return null;
 		}
 		case "secret": {
 			if (!credentials.apikey) return null;
-			const keys = keyName ? env.secretKeys.filter((k) => k.name === keyName) : env.secretKeys;
-			for (const k of keys) if (await timingSafeEqual(credentials.apikey, k.key)) return {
-				authType: "secret",
-				token: null,
-				user: null,
-				claims: null
-			};
+			const keys = env.secretKeys;
+			if (keyName === "*") {
+				for (const value of Object.values(keys)) if (await timingSafeEqual(credentials.apikey, value)) return {
+					authType: "secret",
+					token: null,
+					user: null,
+					claims: null
+				};
+			} else {
+				const value = keys[keyName ?? "default"];
+				if (value && await timingSafeEqual(credentials.apikey, value)) return {
+					authType: "secret",
+					token: null,
+					user: null,
+					claims: null
+				};
+			}
 			return null;
 		}
 		case "user":
 			if (!credentials.token) return null;
 			if (!env.jwks) return null;
 			try {
-				const jwkSet = (0, jose.createLocalJWKSet)(env.jwks);
-				const { payload } = await (0, jose.jwtVerify)(credentials.token, jwkSet);
+				const jwkSet = createLocalJWKSet(env.jwks);
+				const { payload } = await jwtVerify(credentials.token, jwkSet);
 				const claims = payload;
 				return {
 					authType: "user",
@@ -218,51 +243,4 @@ async function verifyAuth(request, options) {
 }
 
 //#endregion
-Object.defineProperty(exports, 'AuthError', {
-  enumerable: true,
-  get: function () {
-    return AuthError;
-  }
-});
-Object.defineProperty(exports, 'EnvError', {
-  enumerable: true,
-  get: function () {
-    return EnvError;
-  }
-});
-Object.defineProperty(exports, 'createAdminClient', {
-  enumerable: true,
-  get: function () {
-    return createAdminClient;
-  }
-});
-Object.defineProperty(exports, 'createContextClient', {
-  enumerable: true,
-  get: function () {
-    return createContextClient;
-  }
-});
-Object.defineProperty(exports, 'extractCredentials', {
-  enumerable: true,
-  get: function () {
-    return extractCredentials;
-  }
-});
-Object.defineProperty(exports, 'resolveEnv', {
-  enumerable: true,
-  get: function () {
-    return resolveEnv;
-  }
-});
-Object.defineProperty(exports, 'verifyAuth', {
-  enumerable: true,
-  get: function () {
-    return verifyAuth;
-  }
-});
-Object.defineProperty(exports, 'verifyCredentials', {
-  enumerable: true,
-  get: function () {
-    return verifyCredentials;
-  }
-});
+export { createAdminClient as a, EnvError as c, createContextClient as i, verifyCredentials as n, resolveEnv as o, extractCredentials as r, AuthError as s, verifyAuth as t };
