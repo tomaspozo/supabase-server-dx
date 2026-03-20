@@ -1,9 +1,8 @@
 import { withSupabase } from "@supabase/server"
-import { env } from "../_shared/env.ts"
 
 Deno.serve(
   withSupabase(
-    { allow: "always", env },
+    { allow: "always" },
     async (_req, ctx) => {
       return Response.json({
         demo: "demo-public-status",

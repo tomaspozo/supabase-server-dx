@@ -1,9 +1,8 @@
 import { withSupabase } from "@supabase/server"
-import { env } from "../_shared/env.ts"
 
 Deno.serve(
   withSupabase(
-    { allow: ["user", "always"], env },
+    { allow: ["user", "always"] },
     async (_req, ctx) => {
       const greeting = ctx.user
         ? `Hello, ${ctx.user.email ?? ctx.user.id}!`

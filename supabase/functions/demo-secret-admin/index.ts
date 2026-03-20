@@ -1,9 +1,8 @@
 import { withSupabase } from "@supabase/server"
-import { env } from "../_shared/env.ts"
 
 Deno.serve(
   withSupabase(
-    { allow: "secret", env },
+    { allow: "secret" },
     async (_req, ctx) => {
       const { data, error } = await ctx.supabaseAdmin.auth.admin.listUsers({
         perPage: 1,

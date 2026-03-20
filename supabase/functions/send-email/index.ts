@@ -9,7 +9,6 @@ import * as React from 'npm:react@18.3.1'
 import { Resend } from 'npm:resend@4.0.0'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { withSupabase } from '@supabase/server'
-import { env } from '../_shared/env.ts'
 import { ConfirmationEmail } from './_templates/confirmation.tsx'
 import { MagicLinkEmail } from './_templates/magic-link.tsx'
 import { RecoveryEmail } from './_templates/recovery.tsx'
@@ -63,7 +62,7 @@ function buildVerificationUrl(
 }
 
 Deno.serve(
-  withSupabase({ allow: 'secret', env }, async (req, _ctx) => {
+  withSupabase({ allow: 'secret' }, async (req, _ctx) => {
     if (req.method !== 'POST') {
       return new Response('Method not allowed', { status: 405 })
     }

@@ -11,10 +11,9 @@
 
 // @ts-nocheck
 import { withSupabase } from "@supabase/server";
-import { env } from "../_shared/env.ts";
 
 Deno.serve(
-  withSupabase({ allow: "secret", env }, async (_req, ctx) => {
+  withSupabase({ allow: "secret" }, async (_req, ctx) => {
     const { data: messages, error: readError } = await ctx.supabaseAdmin.rpc(
       "_admin_queue_read",
       { qty: 5, vt: 30 },

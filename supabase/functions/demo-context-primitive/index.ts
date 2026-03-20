@@ -1,5 +1,4 @@
 import { createSupabaseContext } from "@supabase/server"
-import { env } from "../_shared/env.ts"
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,7 +20,6 @@ Deno.serve(async (req) => {
 
   const { data: ctx, error } = await createSupabaseContext(req, {
     allow: "user",
-    env,
   })
 
   if (error) {
