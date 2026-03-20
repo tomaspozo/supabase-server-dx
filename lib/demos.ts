@@ -61,7 +61,8 @@ export default {
     description:
       "Requires the secret API key. Lists users via admin client. Invoked through a server-side proxy.",
     useProxy: true,
-    snippet: `import { withSupabase } from "@supabase/server"
+    snippet: `// --- Edge Function (supabase/functions/demo-secret-admin/index.ts) ---
+import { withSupabase } from "@supabase/server"
 
 export default {
   fetch: withSupabase({ allow: "secret" }, async (_req, ctx) => {
@@ -74,8 +75,25 @@ export default {
   }),
 }
 
-// Invoked via Next.js proxy: /api/demo-secret-admin
-// The proxy invokes with supabaseAdmin`,
+// --- Server-side proxy (app/api/demo-secret-admin/route.ts) ---
+import { NextResponse } from "next/server"
+import { createSupabaseContext } from "@/lib/supabase/context"
+
+export async function GET() {
+  const { data: ctx, error: ctxError } = await createSupabaseContext({
+    allow: "always",
+  })
+  if (ctxError) {
+    return NextResponse.json({ error: ctxError.message }, { status: 500 })
+  }
+  // supabaseAdmin.functions.invoke sends the secret key automatically
+  const { data, error } =
+    await ctx.supabaseAdmin.functions.invoke("demo-secret-admin")
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+  return NextResponse.json(data)
+}`,
   },
   {
     name: "demo-multi-auth",

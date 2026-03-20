@@ -45,7 +45,9 @@ function resolveKeys(singularVar, pluralVar) {
 function parseJwks(raw) {
 	if (!raw) return null;
 	try {
-		return JSON.parse(raw);
+		const parsed = JSON.parse(raw);
+		if (Array.isArray(parsed)) return { keys: parsed };
+		return parsed;
 	} catch {
 		return null;
 	}
