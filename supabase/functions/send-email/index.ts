@@ -8,7 +8,7 @@
 import * as React from 'npm:react@18.3.1'
 import { Resend } from 'npm:resend@4.0.0'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
-import { withSupabase } from '@supabase/server'
+import { withSupabase } from 'npm:@supabase/server@0.1.0-alpha.1'
 import { ConfirmationEmail } from './_templates/confirmation.tsx'
 import { MagicLinkEmail } from './_templates/magic-link.tsx'
 import { RecoveryEmail } from './_templates/recovery.tsx'
