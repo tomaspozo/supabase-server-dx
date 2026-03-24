@@ -9,7 +9,7 @@
 // @example SELECT api._admin_enqueue_task('send-email', '{"to":"user@example.com"}'::jsonb);
 // @related agentlink_tasks, _admin_enqueue_task, _admin_queue_read, _admin_queue_archive
 
-import { withSupabase } from "npm:@supabase/server@0.1.0-alpha.1"
+import { withSupabase } from "@supabase/server"
 
 export default {
   fetch: withSupabase({ allow: "secret" }, async (_req, { supabaseAdmin }) => {

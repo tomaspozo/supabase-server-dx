@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "@supabase/server/adapters/hono": "npm:@supabase/server@0.1.0-alpha.1/adapters/hono",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2",
+    "hono": "npm:hono@4",
+    "hono/cors": "npm:hono@4/cors",
+    "hono/http-exception": "npm:hono@4/http-exception"
+  }
+}

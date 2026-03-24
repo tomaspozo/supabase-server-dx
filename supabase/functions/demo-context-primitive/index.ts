@@ -1,4 +1,4 @@
-import { createSupabaseContext } from "npm:@supabase/server@0.1.0-alpha.1"
+import { createSupabaseContext } from "@supabase/server"
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

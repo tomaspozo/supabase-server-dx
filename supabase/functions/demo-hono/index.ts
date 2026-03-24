@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { HTTPException } from "hono/http-exception"
-import { withSupabase } from "npm:@supabase/server@0.1.0-alpha.1/adapters/hono"
+import { withSupabase } from "@supabase/server/adapters/hono"
 
 const app = new Hono().basePath("/demo-hono")
 app.use(cors())

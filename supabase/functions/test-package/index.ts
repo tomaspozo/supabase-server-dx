@@ -1,4 +1,4 @@
-import { withSupabase } from "npm:@supabase/server@0.1.0-alpha.1"
+import { withSupabase } from "@supabase/server"
 
 export default {
   fetch: withSupabase(
