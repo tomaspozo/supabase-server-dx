@@ -1,7 +1,7 @@
 /**
  * Next.js adapter for createSupabaseContext
  *
- * Uses core primitives from @supabase/edge-functions/core to verify auth
+ * Uses core primitives from @supabase/server to verify auth
  * and create Supabase clients. The only Next.js-specific logic is reading
  * the access token from cookies (bridging @supabase/ssr's chunked format).
  *
@@ -25,7 +25,7 @@ import {
   type AllowWithKey,
   type SupabaseContext,
   type SupabaseEnv,
-} from "@/supabase/functions/_shared/server-dist/index.mjs";
+} from "@supabase/server";
 
 const BASE64_PREFIX = "base64-";
 
